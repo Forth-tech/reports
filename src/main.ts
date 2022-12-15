@@ -1,3 +1,5 @@
+// import fastifyCookie from "fastify-cookie";
+import fastifyCookie from "@fastify/cookie";
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import {
@@ -10,8 +12,6 @@ import {
   SwaggerDocumentOptions,
   SwaggerModule,
 } from "@nestjs/swagger";
-// import fastifyCookie from "fastify-cookie";
-import fastifyCookie from "@fastify/cookie";
 import { AppModule } from "./app.module";
 import { PrismaService } from "./common/services/prisma.service";
 import { HttpExceptionFilter } from "./utils/http-exception.filter";

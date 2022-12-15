@@ -1,10 +1,10 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
-import { jwtConstants } from './constants';
-import { UsersService } from 'src/users/users.service';
-import { User } from '@prisma/client';
-import { AccessTokenPayload } from './dto/tokens.dto';
+import { Injectable } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { User } from "@prisma/client";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { UsersService } from "src/users/users.service";
+import { jwtConstants } from "./constants";
+import { AccessTokenPayload } from "./dto/tokens.dto";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

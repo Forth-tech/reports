@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { RefreshToken, User } from '@prisma/client';
-import { UsersService } from 'src/users/users.service';
-import { AccessTokenPayload, RefreshTokenPayload } from './dto/tokens.dto';
-import { RefreshTokenService } from 'src/common/services/refreshToken.service';
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { RefreshToken, User } from "@prisma/client";
+import * as bcrypt from "bcrypt";
+import { RefreshTokenService } from "src/common/services/refreshToken.service";
+import { UsersService } from "src/users/users.service";
+import { AccessTokenPayload, RefreshTokenPayload } from "./dto/tokens.dto";
 
 @Injectable()
 export class AuthService {
@@ -28,7 +28,7 @@ export class AuthService {
       email: user.email,
       name: user.name,
     };
-    return this.jwtService.sign(payload, { expiresIn: '30d' });
+    return this.jwtService.sign(payload, { expiresIn: "30d" });
   }
 
   async generateRefreshToken(
@@ -47,7 +47,7 @@ export class AuthService {
         user.id,
         userAgent,
         userHost,
-        this.jwtService.sign(payload, { expiresIn: '1d' }),
+        this.jwtService.sign(payload, { expiresIn: "1d" }),
       );
 
     return refreshToken.token;

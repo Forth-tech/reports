@@ -1,18 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import { User } from '@prisma/client';
-import { PrismaService } from 'src/common/services/prisma.service';
-import { UserOutDto } from './dto/userOut.dto';
+import { Injectable } from "@nestjs/common";
+import { User } from "@prisma/client";
+import * as bcrypt from "bcrypt";
+import { PrismaService } from "src/common/services/prisma.service";
+import { UserOutDto } from "./dto/userOut.dto";
 
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
   async findUserByEmail(email: string): Promise<User | null> {
-    return this.prismaService.user.findUnique({ where: { email: email } });
+    return this.prismaService.user.findUnique({ where: { email } });
   }
 
   async findUserById(id: number): Promise<User | null> {
-    return this.prismaService.user.findUnique({ where: { id: id } });
+    return this.prismaService.user.findUnique({ where: { id } });
   }
 
   async createUser(
@@ -23,9 +23,9 @@ export class UsersService {
   ): Promise<User> {
     return this.prismaService.user.create({
       data: {
-        name: name,
-        email: email,
-        hashedPassword: hashedPassword,
+        name,
+        email,
+        hashedPassword,
         hash: salt,
       },
     });
@@ -44,6 +44,6 @@ export class UsersService {
   ): Promise<{ salt: string; hash: string }> {
     const salt: string = await bcrypt.genSalt(10);
     const hash: string = await bcrypt.hash(password, salt);
-    return { salt: salt, hash: hash };
+    return { salt, hash };
   }
 }

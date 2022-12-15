@@ -1,8 +1,8 @@
-import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
-import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from "@nestjs/common";
+import { HttpArgumentsHost } from "@nestjs/common/interfaces";
+import { FastifyReply, FastifyRequest } from "fastify";
+import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {

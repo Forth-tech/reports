@@ -31,3 +31,25 @@ model RefreshToken {
   deleted_at DateTime?
   user       User      @relation(fields: [userId], references: [id])
 }
+
+model Daily {
+  id              Int      @id @default(autoincrement())
+  network         Network
+  date            DateTime
+  updatedAt       DateTime @updatedAt
+  gainedFollowers Int?
+  lostFollowers   Int?
+  investedValue   Int?
+  clicks          Int?
+  impressions     Int?
+  engagement      Int?
+  reach           Int?
+}
+
+enum Network {
+  FACEBOOK
+  INSTAGRAM
+  TWITTER
+  YOUTUBE
+  TIKTOK
+}

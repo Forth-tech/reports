@@ -10,7 +10,7 @@ import { jwtConstants } from "./constants";
 import { RefreshTokenPayload } from "./dto/tokens.dto";
 
 @Injectable()
-export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh-token') {
+export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, "jwt-refresh-token") {
     private readonly logger = new Logger(JwtRefreshTokenStrategy.name);
 
     constructor(
@@ -26,7 +26,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
             ignoreExpiration: false,
             secretOrKey: jwtConstants.secret,
             passReqToCallback: true,
-        })
+        });
     }
 
     async validate(request: FastifyRequest, payload: RefreshTokenPayload): Promise<User> {
@@ -34,11 +34,11 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
 
         const refreshToken: RefreshToken = await this.refreshTokenService.findToken(refreshTokenCookie);
         if (!refreshToken) {
-            throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
+            throw new HttpException("Invalid refresh token", HttpStatus.UNAUTHORIZED);
         }
 
         if (refreshToken.deleted_at !== null) {
-            throw new HttpException('Refresh token has been revoked', HttpStatus.UNAUTHORIZED);
+            throw new HttpException("Refresh token has been revoked", HttpStatus.UNAUTHORIZED);
         }
 
         return await this.userSerivce.findUserById(payload.user_id);

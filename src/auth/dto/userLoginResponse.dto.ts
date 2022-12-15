@@ -1,17 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
+import { ApiProperty } from "@nestjs/swagger";
+import { DefaultResponseDto } from "../../common/dto/defaultResponse.dto";
 
 export class UserLoginResponseDto extends DefaultResponseDto {
     @ApiProperty({
-        description: 'Message of the response.',
-        example: 'User logged in successfully.',
+        description: "Message of the response.",
+        example: "User logged in successfully.",
     })
     message: string;
 
     @ApiProperty({
-        description: 'Data containing the access token for the user.',
+        description: "Data containing the access token for the user.",
         example: {
-            access_token: 'token124',
+            access_token: "token124",
         },
     })
     data: {
