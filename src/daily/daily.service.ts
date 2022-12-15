@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDailyDto } from './dto/create-daily.dto';
-import { UpdateDailyDto } from './dto/update-daily.dto';
+import { Injectable } from "@nestjs/common";
+import { Daily, Network } from "@prisma/client";
+import { PrismaService } from "src/common/services/prisma.service";
+import { GetDailyQueryDto } from "./dto/getDailyQuery.dto";
+import { PatchDailyRequestDto } from "./dto/patchDailyRequest.dto";
+import { PostDailyRequestDto } from "./dto/postDailyRequest.dto";
+import { DailyOut } from "./entities/dailyOut.entity";
 
 @Injectable()
 export class DailyService {
-  create(createDailyDto: CreateDailyDto) {
-    return 'This action adds a new daily';
+  constructor(private prismaService: PrismaService) {}
+  async create(daily: PostDailyRequestDto): Promise<Daily> {
+    return this.prismaService.daily.create({ data: daily });
   }
 
-  findAll() {
-    return `This action returns all daily`;
+  async findAll() {
+    return this.prismaService.daily.findMany({
+      orderBy: {
+        date: "desc",
+      },
+      take: 1000,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} daily`;
+  async findDailyQuery(query: GetDailyQueryDto): Promise<Daily[]> {
+    const { network, startDate, endDate } = query;
+
+    const where = {
+      network: network ? { equals: network } : undefined,
+      date: { gte: startDate ? startDate : undefined, lte: endDate ? endDate : undefined },
+    };
+
+    return this.prismaService.daily.findMany({where});
   }
 
-  update(id: number, updateDailyDto: UpdateDailyDto) {
-    return `This action updates a #${id} daily`;
+  async findDailyById(id: number): Promise<Daily | null> {
+    return this.prismaService.daily.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} daily`;
+  async update(id: number, data: PatchDailyRequestDto): Promise<Daily> {
+    return this.prismaService.daily.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
+  mapDailyToDailyOut(daily: Daily): DailyOut {
+    delete daily.updatedAt;
+    return daily;
   }
 }
