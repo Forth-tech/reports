@@ -198,7 +198,7 @@ export class AuthController {
     @Request() request: FastifyRequest,
     @Response({ passthrough: true }) response: FastifyReply,
   ): Promise<DefaultResponseDto> {
-    response.clearCookie("access_token");
+    response.clearCookie("refreshToken");
     await this.refreshTokenService.revokeRefreshTokenByValue(
       request.cookies.refreshToken,
     );

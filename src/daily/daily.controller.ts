@@ -21,7 +21,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Daily } from "@prisma/client";
-import { JwtRefreshTokenAuthGuard } from "src/auth/jwt-refresh-token.guard";
+import { JwtAccessTokenAuthGuard } from "src/auth/jwt-access-token.guard";
 import { DefaultResponseDto } from "src/common/dto/defaultResponse.dto";
 import { DailyService } from "./daily.service";
 import { GetDailyQueryDto } from "./dto/getDailyQuery.dto";
@@ -36,7 +36,7 @@ export class DailyController {
   constructor(private readonly dailyService: DailyService) {}
 
   @Post("/")
-  @UseGuards(JwtRefreshTokenAuthGuard)
+  @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
   @ApiTags("daily")
   @ApiOperation({ summary: "Create a new daily result" })
@@ -64,7 +64,7 @@ export class DailyController {
   }
 
   @Get("/")
-  @UseGuards(JwtRefreshTokenAuthGuard)
+  @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
   @ApiTags("daily")
   @ApiOperation({ summary: "Get all daily results" })
@@ -98,7 +98,7 @@ export class DailyController {
   }
 
   @Get("/:id")
-  @UseGuards(JwtRefreshTokenAuthGuard)
+  @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
   @ApiTags("daily")
   @ApiOperation({ summary: "Get a daily result" })
@@ -129,7 +129,7 @@ export class DailyController {
   }
 
   @Patch(":id")
-  @UseGuards(JwtRefreshTokenAuthGuard)
+  @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
   @ApiTags("daily")
   @ApiOperation({ summary: "Update a daily result" })
