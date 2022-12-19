@@ -1,59 +1,59 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Network } from "@prisma/client";
+import { ApiProperty } from '@nestjs/swagger';
+import { Network } from '@prisma/client';
 
 export class DailyOut {
   @ApiProperty({
-    description: "Daily Id",
+    description: 'Daily Id',
     example: 1,
     required: true,
   })
-  id: Number;
+  id: number;
 
   @ApiProperty({
-    description: "Network",
-    example: "FACEBOOK",
+    description: 'Network',
+    example: 'FACEBOOK',
     enum: Network,
     required: true,
   })
   network: Network;
 
   @ApiProperty({
-    description: "Date of daily results",
-    example: "2021-01-01",
+    description: 'Date of daily results',
+    example: '2021-01-01',
     required: true,
   })
   date: Date;
 
   @ApiProperty({
-    description: "Daily gained followers",
+    description: 'Daily gained followers',
     example: 100,
     required: false,
   })
   gainedFollowers: number;
 
   @ApiProperty({
-    description: "Daily lost followers",
+    description: 'Daily lost followers',
     example: 100,
     required: false,
   })
   lostFollowers: number;
 
   @ApiProperty({
-    description: "Daily invested value (in cents)",
+    description: 'Daily invested value (in cents)',
     example: 100,
     required: false,
   })
   investedValue: number;
 
   @ApiProperty({
-    description: "Daily clicks",
+    description: 'Daily clicks',
     example: 100,
     required: false,
   })
   clicks: number;
 
   @ApiProperty({
-    description: "Daily impressions",
+    description: 'Daily impressions',
 
     example: 100,
     required: false,
@@ -61,7 +61,7 @@ export class DailyOut {
   impressions: number;
 
   @ApiProperty({
-    description: "Daily reach",
+    description: 'Daily reach',
     example: 100,
     required: false,
   })

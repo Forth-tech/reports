@@ -1,23 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Network } from '@prisma/client';
-import {
-  IsDate,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-} from 'class-validator';
+import { Format, Network } from '@prisma/client';
+import { IsDate, IsEnum, IsOptional } from 'class-validator';
 
-export class GetDailyQueryDto {
+export class GetPublicationsQueryDto {
   @ApiProperty({
     description: 'Network',
     example: 'FACEBOOK',
     enum: Network,
     required: false,
   })
-  @IsString()
   @IsOptional()
   @IsEnum(Network)
   network: Network;
@@ -39,4 +30,13 @@ export class GetDailyQueryDto {
   @IsDate()
   @IsOptional()
   endDate: Date;
+
+  @ApiProperty({
+    description: 'Date of daily results',
+    example: '2021-01-01',
+    required: false,
+  })
+  @IsEnum(Format)
+  @IsOptional()
+  format: Format;
 }

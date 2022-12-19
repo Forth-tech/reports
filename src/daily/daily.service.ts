@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { Daily, Network } from "@prisma/client";
-import { PrismaService } from "src/common/services/prisma.service";
-import { GetDailyQueryDto } from "./dto/getDailyQuery.dto";
-import { PatchDailyRequestDto } from "./dto/patchDailyRequest.dto";
-import { PostDailyRequestDto } from "./dto/postDailyRequest.dto";
-import { DailyOut } from "./entities/dailyOut.entity";
+import { Injectable } from '@nestjs/common';
+import { Daily, Network } from '@prisma/client';
+import { PrismaService } from 'src/common/services/prisma.service';
+import { GetDailyQueryDto } from './dto/getDailyQuery.dto';
+import { PatchDailyRequestDto } from './dto/patchDailyRequest.dto';
+import { PostDailyRequestDto } from './dto/postDailyRequest.dto';
+import { DailyOut } from './entities/dailyOut.entity';
 
 @Injectable()
 export class DailyService {
@@ -16,7 +16,7 @@ export class DailyService {
   async findAll() {
     return this.prismaService.daily.findMany({
       orderBy: {
-        date: "desc",
+        date: 'desc',
       },
       take: 1000,
     });
@@ -27,10 +27,13 @@ export class DailyService {
 
     const where = {
       network: network ? { equals: network } : undefined,
-      date: { gte: startDate ? startDate : undefined, lte: endDate ? endDate : undefined },
+      date: {
+        gte: startDate ? startDate : undefined,
+        lte: endDate ? endDate : undefined,
+      },
     };
 
-    return this.prismaService.daily.findMany({where});
+    return this.prismaService.daily.findMany({ where });
   }
 
   async findDailyById(id: number): Promise<Daily | null> {
