@@ -7,42 +7,42 @@ import {
   Request,
   Response,
   UseGuards,
-} from "@nestjs/common";
+} from '@nestjs/common';
 import {
   ApiCookieAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
-} from "@nestjs/swagger";
-import { RefreshToken, User } from "@prisma/client";
-import { FastifyReply, FastifyRequest } from "fastify";
-import { DefaultResponseDto } from "src/common/dto/defaultResponse.dto";
-import { FastifyRequestWithUser } from "src/common/interfaces/customFastifyRequest";
-import { RefreshTokenService } from "src/common/services/refreshToken.service";
-import { AuthService } from "./auth.service";
-import { PostTokenRevokeDto } from "./dto/postTokenRevoke.dto";
-import { UserLoginRequestDto } from "./dto/userLoginRequest.dto";
-import { UserLoginResponseDto } from "./dto/userLoginResponse.dto";
-import { JwtRefreshTokenAuthGuard } from "./jwt-refresh-token.guard";
+} from '@nestjs/swagger';
+import { RefreshToken, User } from '@prisma/client';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { FastifyRequestWithUser } from 'src/common/interfaces/customFastifyRequest';
+import { RefreshTokenService } from 'src/common/services/refreshToken.service';
+import { AuthService } from './auth.service';
+import { PostTokenRevokeDto } from './dto/postTokenRevoke.dto';
+import { UserLoginRequestDto } from './dto/userLoginRequest.dto';
+import { UserLoginResponseDto } from './dto/userLoginResponse.dto';
+import { JwtRefreshTokenAuthGuard } from './jwt-refresh-token.guard';
 
-@Controller("auth")
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly refreshTokenService: RefreshTokenService,
   ) {}
 
-  @Post("/login")
-  @ApiTags("auth")
-  @ApiOperation({ summary: "Login returns an access token valid for 30 days" })
+  @Post('/login')
+  @ApiTags('auth')
+  @ApiOperation({ summary: 'Login returns an access token valid for 30 days' })
   @ApiResponse({
     status: 200,
-    description: "Login successful",
+    description: 'Login successful',
     type: UserLoginRequestDto,
   })
   @ApiResponse({
     status: 401,
-    description: "Invalid credentials",
+    description: 'Invalid credentials',
     type: DefaultResponseDto,
   })
   async login(
@@ -63,36 +63,36 @@ export class AuthController {
       const refreshToken: string = await this.authService.generateRefreshToken(
         user,
         request.hostname,
-        request.headers["user-agent"],
+        request.headers['user-agent'],
       );
-      response.setCookie("refreshToken", refreshToken, {});
+      response.setCookie('refreshToken', refreshToken, {});
 
       return {
         success: true,
-        message: "Login successful",
+        message: 'Login successful',
         data: { access_token: accessToken },
       };
     }
-    throw new HttpException("Invalid credentials", HttpStatus.UNAUTHORIZED);
+    throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
   }
 
-  @Post("/token/refresh")
+  @Post('/token/refresh')
   @UseGuards(JwtRefreshTokenAuthGuard)
   @ApiCookieAuth()
-  @ApiTags("auth")
-  @ApiOperation({ summary: "Returns a new access token, valid for 30 days." })
+  @ApiTags('auth')
+  @ApiOperation({ summary: 'Returns a new access token, valid for 30 days.' })
   @ApiResponse({
-    description: "New access token generated successfully.",
+    description: 'New access token generated successfully.',
     status: 200,
     type: UserLoginResponseDto,
   })
   @ApiResponse({
-    description: "Bad request.",
+    description: 'Bad request.',
     status: 400,
     type: DefaultResponseDto,
   })
   @ApiResponse({
-    description: "Invalid credentials.",
+    description: 'Invalid credentials.',
     status: 401,
     type: DefaultResponseDto,
   })
@@ -106,43 +106,43 @@ export class AuthController {
 
     return {
       success: true,
-      message: "New access token generated successfully.",
+      message: 'New access token generated successfully.',
       data: {
         access_token: token,
       },
     };
   }
 
-  @Post("/token/revoke")
+  @Post('/token/revoke')
   @UseGuards(JwtRefreshTokenAuthGuard)
   @ApiCookieAuth()
-  @ApiTags("auth")
+  @ApiTags('auth')
   @ApiOperation({
-    summary: "Revokes a refresh token, leaving it blacklisted.",
+    summary: 'Revokes a refresh token, leaving it blacklisted.',
     description:
-      "Revokes a refresh token. The refresh token to be revoked can be sent through" +
+      'Revokes a refresh token. The refresh token to be revoked can be sent through' +
       " a cookie or the request's body. Priority is given to the token on the" +
       " request's body. Either way, it is necessary to have a valid refreshToken" +
-      " cookie sent along with the request.",
+      ' cookie sent along with the request.',
   })
   @ApiResponse({
     status: 200,
-    description: "Refresh token revoked successfully.",
+    description: 'Refresh token revoked successfully.',
     type: UserLoginResponseDto,
   })
   @ApiResponse({
     status: 400,
-    description: "Bad request.",
+    description: 'Bad request.',
     type: DefaultResponseDto,
   })
   @ApiResponse({
     status: 401,
-    description: "Invalid credentials.",
+    description: 'Invalid credentials.',
     type: DefaultResponseDto,
   })
   @ApiResponse({
     status: 403,
-    description: "You dont have permission to perform this action.",
+    description: 'You dont have permission to perform this action.',
     type: DefaultResponseDto,
   })
   async tokenRevoke(
@@ -166,45 +166,45 @@ export class AuthController {
       await this.refreshTokenService.revokeRefreshTokenByValue(refreshTokenStr);
     } else {
       throw new HttpException(
-        "You dont have permission to perform this action.",
+        'You dont have permission to perform this action.',
         HttpStatus.FORBIDDEN,
       );
     }
 
     // Delete the refresh token cookie.
-    response.clearCookie("refreshToken");
+    response.clearCookie('refreshToken');
 
     return {
       success: true,
-      message: "Refresh token revoked successfully.",
+      message: 'Refresh token revoked successfully.',
       data: null,
     };
   }
 
-  @Post("/logout")
-  @ApiTags("auth")
-  @ApiOperation({ summary: "Logout" })
+  @Post('/logout')
+  @ApiTags('auth')
+  @ApiOperation({ summary: 'Logout' })
   @ApiResponse({
     status: 200,
-    description: "Logout successful",
+    description: 'Logout successful',
     type: DefaultResponseDto,
   })
   @ApiResponse({
     status: 401,
-    description: "Invalid credentials",
+    description: 'Invalid credentials',
     type: DefaultResponseDto,
   })
   async logoutUser(
     @Request() request: FastifyRequest,
     @Response({ passthrough: true }) response: FastifyReply,
   ): Promise<DefaultResponseDto> {
-    response.clearCookie("refreshToken");
+    response.clearCookie('refreshToken');
     await this.refreshTokenService.revokeRefreshTokenByValue(
       request.cookies.refreshToken,
     );
     return {
       success: true,
-      message: "Logout successful",
+      message: 'Logout successful',
       data: {},
     };
   }

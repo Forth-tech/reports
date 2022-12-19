@@ -10,7 +10,7 @@ import {
   Post,
   Query,
   UseGuards,
-} from "@nestjs/common";
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCookieAuth,
@@ -19,33 +19,33 @@ import {
   ApiNotFoundResponse,
   ApiOperation,
   ApiTags,
-} from "@nestjs/swagger";
-import { Daily } from "@prisma/client";
-import { JwtAccessTokenAuthGuard } from "src/auth/jwt-access-token.guard";
-import { DefaultResponseDto } from "src/common/dto/defaultResponse.dto";
-import { DailyService } from "./daily.service";
-import { GetDailyQueryDto } from "./dto/getDailyQuery.dto";
-import { GetDailyResponseDto } from "./dto/getDailyResponse.dto";
-import { PatchDailyRequestDto } from "./dto/patchDailyRequest.dto";
-import { PostDailyRequestDto } from "./dto/postDailyRequest.dto";
-import { PostDailyResponseDto } from "./dto/postDailyResponse.dto";
-import { DailyOut } from "./entities/dailyOut.entity";
+} from '@nestjs/swagger';
+import { Daily } from '@prisma/client';
+import { JwtAccessTokenAuthGuard } from 'src/auth/jwt-access-token.guard';
+import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { DailyService } from './daily.service';
+import { GetDailyQueryDto } from './dto/getDailyQuery.dto';
+import { GetDailyResponseDto } from './dto/getDailyResponse.dto';
+import { PatchDailyRequestDto } from './dto/patchDailyRequest.dto';
+import { PostDailyRequestDto } from './dto/postDailyRequest.dto';
+import { PostDailyResponseDto } from './dto/postDailyResponse.dto';
+import { DailyOut } from './entities/dailyOut.entity';
 
-@Controller("daily")
+@Controller('daily')
 export class DailyController {
   constructor(private readonly dailyService: DailyService) {}
 
-  @Post("/")
+  @Post('/')
   @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
-  @ApiTags("daily")
-  @ApiOperation({ summary: "Create a new daily result" })
+  @ApiTags('daily')
+  @ApiOperation({ summary: 'Create a new daily result' })
   @ApiCreatedResponse({
-    description: "Daily result created",
+    description: 'Daily result created',
     type: PostDailyResponseDto,
   })
   @ApiBadRequestResponse({
-    description: "Invalid data",
+    description: 'Invalid data',
     type: DefaultResponseDto,
   })
   async create(
@@ -58,22 +58,22 @@ export class DailyController {
 
     return {
       success: true,
-      message: "Daily result created",
+      message: 'Daily result created',
       data: dailyOut,
     };
   }
 
-  @Get("/")
+  @Get('/')
   @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
-  @ApiTags("daily")
-  @ApiOperation({ summary: "Get all daily results" })
+  @ApiTags('daily')
+  @ApiOperation({ summary: 'Get all daily results' })
   @ApiFoundResponse({
-    description: "Daily results",
+    description: 'Daily results',
     type: GetDailyResponseDto,
   })
   @ApiBadRequestResponse({
-    description: "Invalid data",
+    description: 'Invalid data',
     type: DefaultResponseDto,
   })
   async findAll(
@@ -92,57 +92,57 @@ export class DailyController {
 
     return {
       success: true,
-      message: "Daily results",
+      message: 'Daily results',
       data: dailyOut,
     };
   }
 
-  @Get("/:id")
+  @Get('/:id')
   @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
-  @ApiTags("daily")
-  @ApiOperation({ summary: "Get a daily result" })
+  @ApiTags('daily')
+  @ApiOperation({ summary: 'Get a daily result' })
   @ApiFoundResponse({
-    description: "Daily result",
+    description: 'Daily result',
     type: GetDailyResponseDto,
   })
   @ApiBadRequestResponse({
-    description: "Invalid data",
+    description: 'Invalid data',
     type: DefaultResponseDto,
   })
   @ApiNotFoundResponse({
-    description: "Daily result not found",
+    description: 'Daily result not found',
     type: DefaultResponseDto,
   })
-  async findOne(@Param("id") id: string): Promise<GetDailyResponseDto> {
+  async findOne(@Param('id') id: string): Promise<GetDailyResponseDto> {
     const daily: Daily | null = await this.dailyService.findDailyById(+id);
 
     if (daily) {
       const dailyOut: DailyOut = this.dailyService.mapDailyToDailyOut(daily);
       return {
         success: true,
-        message: "Daily results",
+        message: 'Daily results',
         data: [dailyOut],
       };
     }
-    throw new HttpException("Daily result not found", HttpStatus.NOT_FOUND);
+    throw new HttpException('Daily result not found', HttpStatus.NOT_FOUND);
   }
 
-  @Patch(":id")
+  @Patch(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
-  @ApiTags("daily")
-  @ApiOperation({ summary: "Update a daily result" })
+  @ApiTags('daily')
+  @ApiOperation({ summary: 'Update a daily result' })
   @ApiCreatedResponse({
-    description: "Daily result updated",
+    description: 'Daily result updated',
     type: PostDailyResponseDto,
   })
   @ApiBadRequestResponse({
-    description: "Invalid data",
+    description: 'Invalid data',
     type: DefaultResponseDto,
   })
   async update(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() updateDailyDto: PatchDailyRequestDto,
   ): Promise<PostDailyResponseDto> {
     const daily: Daily | null = await this.dailyService.findDailyById(+id);
@@ -154,10 +154,10 @@ export class DailyController {
         this.dailyService.mapDailyToDailyOut(updatedDaily);
       return {
         success: true,
-        message: "Successfully updated daily result",
+        message: 'Successfully updated daily result',
         data: dailyOut,
       };
     }
-    throw new HttpException("Daily result not found", HttpStatus.NOT_FOUND);
+    throw new HttpException('Daily result not found', HttpStatus.NOT_FOUND);
   }
 }
