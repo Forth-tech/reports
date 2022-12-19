@@ -1,21 +1,21 @@
 // import fastifyCookie from "fastify-cookie";
-import fastifyCookie from "@fastify/cookie";
-import { ValidationPipe } from "@nestjs/common";
-import { NestFactory } from "@nestjs/core";
+import fastifyCookie from '@fastify/cookie';
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
-} from "@nestjs/platform-fastify";
+} from '@nestjs/platform-fastify';
 import {
   DocumentBuilder,
   SwaggerCustomOptions,
   SwaggerDocumentOptions,
   SwaggerModule,
-} from "@nestjs/swagger";
-import { AppModule } from "./app.module";
-import { PrismaService } from "./common/services/prisma.service";
-import { HttpExceptionFilter } from "./utils/http-exception.filter";
-import { LoggingInterceptor } from "./utils/loggin.interceptor";
+} from '@nestjs/swagger';
+import { AppModule } from './app.module';
+import { PrismaService } from './common/services/prisma.service';
+import { HttpExceptionFilter } from './utils/http-exception.filter';
+import { LoggingInterceptor } from './utils/loggin.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -24,7 +24,7 @@ async function bootstrap() {
   );
 
   // Register cookie plugin. Allows us to use cookies in our requests.
-  const cookieSecret = process.env.COOKIE_SECRET || "";
+  const cookieSecret = process.env.COOKIE_SECRET || '';
   app.register(fastifyCookie, {
     secret: cookieSecret,
   });
@@ -36,15 +36,15 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
 
   const config = new DocumentBuilder()
-    .setTitle("NestJS API")
+    .setTitle('NestJS API')
     .setDescription(
-      "Basic NestJS API to serve as a template for faster backend development.",
+      'Basic NestJS API to serve as a template for faster backend development.',
     )
-    .setVersion("0.1")
+    .setVersion('0.1')
     .addBearerAuth()
-    .addTag("ping")
-    .addTag("auth")
-    .addTag("user")
+    .addTag('ping')
+    .addTag('auth')
+    .addTag('user')
     .build();
 
   const options: SwaggerDocumentOptions = {
@@ -60,7 +60,7 @@ async function bootstrap() {
       persistAuthorization: true,
     },
   };
-  SwaggerModule.setup("api", app, document, customOptions);
+  SwaggerModule.setup('api', app, document, customOptions);
 
   // Fixing issues with enableShutdownHooks.
   // https://docs.nestjs.com/recipes/prisma#issues-with-enableshutdownhooks
@@ -83,6 +83,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000, "0.0.0.0");
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

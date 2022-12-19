@@ -19,19 +19,19 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   constructor(
     private userService: UsersService,
     private readonly refreshTokenService: RefreshTokenService,
-) {
+  ) {
     super({
-        jwtFromRequest: ExtractJwt.fromExtractors([
-            (request: Request) => {
-                return request?.cookies?.refreshToken;
-            },
-        ]),
-        ignoreExpiration: false,
-        secretOrKey: jwtConstants.secret,
-        // Allow access the cookies in our  validate method.
-        passReqToCallback: true,
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) => {
+          return request?.cookies?.refreshToken;
+        },
+      ]),
+      ignoreExpiration: false,
+      secretOrKey: jwtConstants.secret,
+      // Allow access the cookies in our  validate method.
+      passReqToCallback: true,
     });
-}
+  }
 
   /*
    * This method is called when a user is trying to access a protected route.

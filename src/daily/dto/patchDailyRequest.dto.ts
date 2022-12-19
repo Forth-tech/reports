@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Network } from "@prisma/client";
+import { ApiProperty } from '@nestjs/swagger';
+import { Network } from '@prisma/client';
 import {
   IsDate,
   IsEnum,
@@ -8,12 +8,11 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-} from "class-validator";
+} from 'class-validator';
 
 export class PatchDailyRequestDto {
-
   @ApiProperty({
-    description: "Daily gained followers",
+    description: 'Daily gained followers',
     example: 100,
     required: false,
   })
@@ -23,7 +22,7 @@ export class PatchDailyRequestDto {
   gainedFollowers: number;
 
   @ApiProperty({
-    description: "Daily lost followers",
+    description: 'Daily lost followers',
     example: 100,
     required: false,
   })
@@ -33,7 +32,7 @@ export class PatchDailyRequestDto {
   lostFollowers: number;
 
   @ApiProperty({
-    description: "Daily invested value (in cents)",
+    description: 'Daily invested value (in cents)',
     example: 100,
     required: false,
   })
@@ -43,7 +42,7 @@ export class PatchDailyRequestDto {
   investedValue: number;
 
   @ApiProperty({
-    description: "Daily clicks",
+    description: 'Daily clicks',
     example: 100,
     required: false,
   })
@@ -53,7 +52,7 @@ export class PatchDailyRequestDto {
   clicks: number;
 
   @ApiProperty({
-    description: "Daily impressions",
+    description: 'Daily impressions',
 
     example: 100,
     required: false,
@@ -64,7 +63,7 @@ export class PatchDailyRequestDto {
   impressions: number;
 
   @ApiProperty({
-    description: "Daily reach",
+    description: 'Daily reach',
     example: 100,
     required: false,
   })
