@@ -66,6 +66,15 @@ model Daily {
   reach           Int?
 }
 
+model Networks {
+  id      Int     @id @default(autoincrement())
+  network Network
+  url     String
+  name    String
+
+  @@unique([network, name])
+}
+
 enum Network {
   FACEBOOK
   INSTAGRAM
