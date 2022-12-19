@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshToken, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { RefreshTokenService } from 'src/common/services/refreshToken.service';
-import { UsersService } from 'src/users/users.service';
+import { RefreshTokenService } from '../../src/common/services/refreshToken.service';
+import { UsersService } from '../../src/users/users.service';
 import { AccessTokenPayload, RefreshTokenPayload } from './dto/tokens.dto';
 
 @Injectable()

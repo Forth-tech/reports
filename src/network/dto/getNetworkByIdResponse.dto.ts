@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { DefaultResponseDto } from '../../../src/common/dto/defaultResponse.dto';
 import { NetworkOut } from '../entities/network.entity';
 
 export class GetNetworkByIdResponseDto extends DefaultResponseDto {

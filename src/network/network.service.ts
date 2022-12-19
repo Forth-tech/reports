@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Networks } from '@prisma/client';
-import { PrismaService } from 'src/common/services/prisma.service';
+import { PrismaService } from '../../src/common/services/prisma.service';
 import { PostNetworkRequestDto } from './dto/postNetworkRequest.dto';
 
 @Injectable()

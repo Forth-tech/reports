@@ -21,8 +21,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Daily } from '@prisma/client';
-import { JwtAccessTokenAuthGuard } from 'src/auth/jwt-access-token.guard';
-import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { JwtAccessTokenAuthGuard } from '../../src/auth/jwt-access-token.guard';
+import { DefaultResponseDto } from '../../src/common/dto/defaultResponse.dto';
 import { DailyService } from './daily.service';
 import { GetDailyQueryDto } from './dto/getDailyQuery.dto';
 import { GetDailyResponseDto } from './dto/getDailyResponse.dto';

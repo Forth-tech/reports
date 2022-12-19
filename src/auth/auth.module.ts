@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { PrismaService } from 'src/common/services/prisma.service';
-import { RefreshTokenService } from 'src/common/services/refreshToken.service';
-import { UsersModule } from 'src/users/users.module';
+import { PrismaService } from '../../src/common/services/prisma.service';
+import { RefreshTokenService } from '../../src/common/services/refreshToken.service';
+import { UsersModule } from '../../src/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';

@@ -21,8 +21,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Publication } from '@prisma/client';
-import { JwtAccessTokenAuthGuard } from 'src/auth/jwt-access-token.guard';
-import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { JwtAccessTokenAuthGuard } from '../../src/auth/jwt-access-token.guard';
+import { DefaultResponseDto } from '../../src/common/dto/defaultResponse.dto';
 import { PostPublicationRequestDto } from './dto/postPublicationRequest.dto';
 import { PostPublicationResponDto } from './dto/postPublicationResponse.dto';
 import { PatchPublicationRequestDto } from './dto/patchPublicationRequest.dto';
