@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAdCampaignDto } from './dto/create-ad-campaign.dto';
+import { AdCampaign } from '@prisma/client';
+import { PrismaService } from '../common/services/prisma.service';
+import { PostAdCampaignRequestDto } from './dto/postAdCampaignRequest.dto';
 import { UpdateAdCampaignDto } from './dto/update-ad-campaign.dto';
+import { AdCampaignOut } from './entities/ad-campaign.entity';
 
 @Injectable()
 export class AdCampaignService {
-  create(createAdCampaignDto: CreateAdCampaignDto) {
-    return 'This action adds a new adCampaign';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async create(
+    createAdCampaignDto: PostAdCampaignRequestDto,
+  ): Promise<AdCampaign | null> {
+    return this.prismaService.adCampaign.create({
+      data: createAdCampaignDto,
+    });
   }
 
   findAll() {
@@ -22,5 +31,11 @@ export class AdCampaignService {
 
   remove(id: number) {
     return `This action removes a #${id} adCampaign`;
+  }
+
+  mapAdCampaignToAdCampaignOut(adCampaign: AdCampaign): AdCampaignOut {
+    delete adCampaign.createdAt;
+    delete adCampaign.updatedAt;
+    return adCampaign;
   }
 }

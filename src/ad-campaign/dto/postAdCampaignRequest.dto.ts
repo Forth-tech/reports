@@ -1,22 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsString,
-  IsDate,
-  IsOptional,
-  IsNumber,
-} from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class AdCampaignOut {
-  @ApiProperty({
-    description: 'ID of the campaign.',
-    example: 1,
-    required: true,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  id: number;
-
+export class PostAdCampaignRequestDto {
   @ApiProperty({
     description: 'Name of the campaign.',
     example: 'Teste XPTO',

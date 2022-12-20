@@ -4,6 +4,6 @@ import { AdCampaignController } from './ad-campaign.controller';
 
 @Module({
   controllers: [AdCampaignController],
-  providers: [AdCampaignService]
+  providers: [AdCampaignService],
 })
 export class AdCampaignModule {}
