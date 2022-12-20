@@ -10,6 +10,6 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [DailyModule, AuthModule, UsersModule, PublicationModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService]
 })
 export class AppModule {}
