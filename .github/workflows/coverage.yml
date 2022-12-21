@@ -11,6 +11,17 @@ jobs:
       matrix:
         node-version: [18.x]
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: reports-test
+          MYSQL_USER: prisma
+          MYSQL_PASSWORD: senhatemp
+        ports:
+          - 3306:3306
+
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
@@ -25,12 +36,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Setup MySql
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          mysql database: 'reports-test'
-          mysql user: 'prisma'
-          mysql password: 'senhatemp'
+      # - name: Setup MySql
+      #   uses: mirromutth/mysql-action@v1.1
+      #   with:
+      #     mysql database: 'reports-test'
+      #     mysql user: 'prisma'
+      #     mysql password: 'senhatemp'
 
       - name: Install dependencies
         run: yarn install
