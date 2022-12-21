@@ -75,6 +75,19 @@ model Networks {
   @@unique([network, name])
 }
 
+model AdCampaign {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  name        String
+  goal        String
+  networkName String?   @unique
+  networkId   String?
+  networkGoal String?
+  startDate   DateTime
+  endDate     DateTime?
+}
+
 enum Network {
   FACEBOOK
   INSTAGRAM

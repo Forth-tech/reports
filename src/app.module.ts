@@ -7,6 +7,9 @@ import { DailyModule } from './daily/daily.module';
 import { PublicationModule } from './publication/publication.module';
 import { UsersModule } from './users/users.module';
 import { NetworkModule } from './network/network.module';
+import { AdModule } from './ad/ad.module';
+import { AdCampaignModule } from './ad-campaign/ad-campaign.module';
+import { RouterModule } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -15,8 +18,17 @@ import { NetworkModule } from './network/network.module';
     UsersModule,
     PublicationModule,
     NetworkModule,
+    AdModule,
+    AdCampaignModule,
+    RouterModule.register([
+      {
+        path: 'ad',
+        module: AdModule,
+        children: [{ path: 'campaign', module: AdCampaignModule }],
+      },
+    ]),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService]
 })
 export class AppModule {}
