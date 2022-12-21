@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [18.x]
 
     steps:
     - name: Checkout repository
@@ -20,8 +20,17 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    steps:
+      - uses: mirromutth/mysql-action@v1.1
+        mysql database: 'reports-test' 
+        mysql user: 'prisma' 
+        mysql password: 'senhatemp' 
+
     - name: Install dependencies
       run: yarn install
+
+    - name: Migrate database
+      run: dotenv -e .env.test yarn prisma migrate dev
     
     - name: Run tests
       run: yarn test:cov
