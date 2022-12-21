@@ -6,6 +6,7 @@ import { PrismaService } from './common/services/prisma.service';
 import { DailyModule } from './daily/daily.module';
 import { PublicationModule } from './publication/publication.module';
 import { UsersModule } from './users/users.module';
+import { NetworkModule } from './network/network.module';
 import { AdModule } from './ad/ad.module';
 import { AdCampaignModule } from './ad-campaign/ad-campaign.module';
 import { RouterModule } from '@nestjs/core';
@@ -16,6 +17,7 @@ import { RouterModule } from '@nestjs/core';
     AuthModule,
     UsersModule,
     PublicationModule,
+    NetworkModule,
     AdModule,
     AdCampaignModule,
     RouterModule.register([
