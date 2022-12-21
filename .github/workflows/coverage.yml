@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -12,26 +11,26 @@ jobs:
         node-version: [18.x]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Setup MySql
-      uses: mirromutth/mysql-action@v1.1
-      with:
-        mysql database: 'reports-test' 
-        mysql user: 'prisma' 
-        mysql password: 'senhatemp' 
+      - name: Setup MySql
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql database: 'reports-test'
+          mysql user: 'prisma'
+          mysql password: 'senhatemp'
 
-    - name: Install dependencies
-      run: yarn install
+      - name: Install dependencies
+        run: yarn install
 
-    - name: Migrate database
-      run: dotenv -e .env.test yarn prisma migrate dev
-    
-    - name: Run tests
-      run: yarn test:cov
+      - name: Migrate database
+        run: yarn migrate:dev
+
+      - name: Run tests
+        run: yarn test:cov
