@@ -36,9 +36,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Setup MySql
-        run: |
-          sudo /etc/init.d/mysql start
+      # - name: Setup MySql
+      #   run: |
+      #     sudo /etc/init.d/mysql start
       #   uses: mirromutth/mysql-action@v1.1
       #   with:
       #     mysql database: 'reports-test'
