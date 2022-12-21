@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    enviroment: Tests
 
     strategy:
       matrix:
@@ -34,14 +35,19 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: 'Create env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env.test
+          cat .env.test
+
       - name: Migrate database
-        run: yarn migrate:dev
+        run: yarn migrate:test
 
       - name: Create coverage folder
         run: mkdir coverage
 
       - name: Run tests
-        run: yarn jest --coverage
+        run: yarn test:cov
 
       # - name: Monitor coverage
       #   uses: slavcodev/coverage-monitor-action@v1
