@@ -17,15 +17,18 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 
-  describe("Create Users", () => {
+  describe('Create Users', () => {
     it('should create a user', async () => {
-      expect(await service.createUser(
-        'name',
-        'johndoe@fake.com',
-        'hashedPassword',
-        'hash'
-      )).toBeDefined();
-  })});
+      expect(
+        await service.createUser(
+          'name',
+          'johndoe@fake.com',
+          'hashedPassword',
+          'hash',
+        ),
+      ).toBeDefined();
+    });
+  });
 
   it('should return a user', async () => {
     expect(await service.findUserByEmail('johndoe@fake.com')).toBeDefined();

@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { NetworkService } from './network.service';
 import { PostNetworkRequestDto } from './dto/postNetworkRequest.dto';
-import { JwtAccessTokenAuthGuard } from 'src/auth/jwt-access-token.guard';
+import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
 import {
   ApiCookieAuth,
   ApiCreatedResponse,
