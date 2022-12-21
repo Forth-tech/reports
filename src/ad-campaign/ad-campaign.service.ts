@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { AdCampaign } from '@prisma/client';
 import { PrismaService } from '../common/services/prisma.service';
+import { GetAdCampaignQueryDto } from './dto/getAdCampaignQuery.dto';
+import { PatchAdCampaignRequestDto } from './dto/patchAdCampaignRequest.dto';
 import { PostAdCampaignRequestDto } from './dto/postAdCampaignRequest.dto';
-import { UpdateAdCampaignDto } from './dto/update-ad-campaign.dto';
 import { AdCampaignOut } from './entities/ad-campaign.entity';
 
 @Injectable()
@@ -17,20 +18,32 @@ export class AdCampaignService {
     });
   }
 
-  findAll() {
-    return `This action returns all adCampaign`;
+  async findAll(query: GetAdCampaignQueryDto): Promise<AdCampaign[]> {
+    const where = {
+      goal: query.goal ? { equals: query.goal } : undefined,
+      startDate: query.startDate ? { gte: query.startDate } : undefined,
+      endDate: query.endDate ? { lte: query.endDate } : undefined,
+    };
+    return this.prismaService.adCampaign.findMany({
+      where: where,
+      take: 50,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} adCampaign`;
+  async findOne(id: number): Promise<AdCampaign | null> {
+    return this.prismaService.adCampaign.findUnique({
+      where: { id: id },
+    });
   }
 
-  update(id: number, updateAdCampaignDto: UpdateAdCampaignDto) {
-    return `This action updates a #${id} adCampaign`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} adCampaign`;
+  async update(
+    id: number,
+    updateAdCampaignDto: PatchAdCampaignRequestDto,
+  ): Promise<AdCampaign> {
+    return this.prismaService.adCampaign.update({
+      where: { id: id },
+      data: updateAdCampaignDto,
+    });
   }
 
   mapAdCampaignToAdCampaignOut(adCampaign: AdCampaign): AdCampaignOut {
