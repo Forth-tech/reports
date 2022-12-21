@@ -36,7 +36,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # - name: Setup MySql
+      - name: Setup MySql
+        run: |
+          sudo /etc/init.d/mysql start
       #   uses: mirromutth/mysql-action@v1.1
       #   with:
       #     mysql database: 'reports-test'
@@ -50,6 +52,11 @@ jobs:
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env.test
           cat .env.test
+
+      - name: Sleep for 120 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '120s'
 
       - name: Migrate database
         run: yarn migrate:test
