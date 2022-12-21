@@ -13,7 +13,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
 import { PostUserRequestDto } from './dto/postUserRequest.dto';
 import { PostUserResponseDto } from './dto/postUserResponse.dto';
 import { UserOutDto } from './dto/userOut.dto';

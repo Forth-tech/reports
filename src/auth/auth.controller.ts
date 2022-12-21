@@ -16,9 +16,9 @@ import {
 } from '@nestjs/swagger';
 import { RefreshToken, User } from '@prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
-import { FastifyRequestWithUser } from 'src/common/interfaces/customFastifyRequest';
-import { RefreshTokenService } from 'src/common/services/refreshToken.service';
+import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { RefreshTokenService } from '../common/services/refreshToken.service';
 import { AuthService } from './auth.service';
 import { PostTokenRevokeDto } from './dto/postTokenRevoke.dto';
 import { UserLoginRequestDto } from './dto/userLoginRequest.dto';
@@ -63,7 +63,7 @@ export class AuthController {
       const refreshToken: string = await this.authService.generateRefreshToken(
         user,
         request.hostname,
-        request.headers['user-agent'],
+        request.headers['user-agent'] ? request.headers['user-agent'] : '',
       );
       response.setCookie('refreshToken', refreshToken, {});
 

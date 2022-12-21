@@ -28,10 +28,14 @@ export class RefreshTokenService {
   ): Promise<RefreshToken> {
     return this.prisma.refreshToken.create({
       data: {
-        userId,
-        userAgent,
-        userHost,
-        token,
+        userAgent: userAgent,
+        userHost: userHost,
+        token: token,
+        user: {
+          connect: {
+            id: userId,
+          },
+        }
       },
     });
   }

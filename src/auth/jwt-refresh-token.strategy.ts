@@ -4,8 +4,8 @@ import { RefreshToken, User } from '@prisma/client';
 import { Request } from 'express';
 import { FastifyRequest } from 'fastify';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { RefreshTokenService } from 'src/common/services/refreshToken.service';
-import { UsersService } from 'src/users/users.service';
+import { RefreshTokenService } from '../common/services/refreshToken.service';
+import { UsersService } from '../users/users.service';
 import { jwtConstants } from './constants';
 import { RefreshTokenPayload } from './dto/tokens.dto';
 
