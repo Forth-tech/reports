@@ -35,7 +35,7 @@ export class RefreshTokenService {
           connect: {
             id: userId,
           },
-        }
+        },
       },
     });
   }
