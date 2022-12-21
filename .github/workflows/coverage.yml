@@ -39,7 +39,7 @@ jobs:
           fail_on_empty: true
 
       - name: Migrate database
-        run: yarn migrate:dev
+        run: yarn migrate:test
 
       - name: Run tests
         run: yarn test:cov
