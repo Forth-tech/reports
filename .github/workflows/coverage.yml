@@ -20,8 +20,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    steps:
-      - uses: mirromutth/mysql-action@v1.1
+    - name: Setup MySql
+      uses: mirromutth/mysql-action@v1.1
+      with:
         mysql database: 'reports-test' 
         mysql user: 'prisma' 
         mysql password: 'senhatemp' 
