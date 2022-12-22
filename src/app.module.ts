@@ -15,6 +15,7 @@ import { StateModule } from './state/state.module';
 import { ClientModule } from './client/client.module';
 import { StoreModule } from './store/store.module';
 import { PurchaseModule } from './purchase/purchase.module';
+import { ItemModule } from './item/item.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PurchaseModule } from './purchase/purchase.module';
     ClientModule,
     StoreModule,
     PurchaseModule,
+    ItemModule,
     RouterModule.register([
       {
         path: 'ad',
@@ -46,6 +48,7 @@ import { PurchaseModule } from './purchase/purchase.module';
           { path: 'client', module: ClientModule },
           { path: 'store', module: StoreModule },
           { path: 'purchase', module: PurchaseModule },
+          { path: 'item', module: ItemModule },
         ],
       },
     ]),
