@@ -14,6 +14,7 @@ import { CityModule } from './city/city.module';
 import { StateModule } from './state/state.module';
 import { ClientModule } from './client/client.module';
 import { StoreModule } from './store/store.module';
+import { PurchaseModule } from './purchase/purchase.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { StoreModule } from './store/store.module';
     StateModule,
     ClientModule,
     StoreModule,
+    PurchaseModule,
     RouterModule.register([
       {
         path: 'ad',
@@ -43,6 +45,7 @@ import { StoreModule } from './store/store.module';
           { path: 'state', module: StateModule },
           { path: 'client', module: ClientModule },
           { path: 'store', module: StoreModule },
+          { path: 'purchase', module: PurchaseModule },
         ],
       },
     ]),
