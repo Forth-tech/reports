@@ -16,7 +16,7 @@ describe('CityController', () => {
 
     controller = module.get<CityController>(CityController);
     prisma = module.get<PrismaService>(PrismaService);
-    
+
     const state = await prisma.state.create({
       data: {
         name: 'Jakarta',
@@ -84,7 +84,7 @@ describe('CityController', () => {
       const city = await prisma.city.create({
         data: {
           name: 'Jakarta',
-          id_state:  stateId,
+          id_state: stateId,
         },
       });
 

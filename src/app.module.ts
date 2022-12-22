@@ -11,6 +11,7 @@ import { AdModule } from './ad/ad.module';
 import { AdCampaignModule } from './ad-campaign/ad-campaign.module';
 import { RouterModule } from '@nestjs/core';
 import { CityModule } from './city/city.module';
+import { StateModule } from './state/state.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { CityModule } from './city/city.module';
         children: [{ path: 'city', module: CityModule }],
       },
     ]),
+    StateModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
