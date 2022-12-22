@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'src/common/services/prisma.service';
+import { PrismaService } from '../common/services/prisma.service';
 import { CityController } from './city.controller';
 import { CityService } from './city.service';
 
 describe('CityController', () => {
   let controller: CityController;
   let prisma: PrismaService;
+  let stateId: number;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,24 +16,18 @@ describe('CityController', () => {
 
     controller = module.get<CityController>(CityController);
     prisma = module.get<PrismaService>(PrismaService);
-  });
-
-  beforeAll(async () => {
-    // Create a base state for testing
-    await prisma.state.create({
+    
+    const state = await prisma.state.create({
       data: {
         name: 'Jakarta',
       },
     });
+    stateId = state.id;
   });
 
   // Clean city database after each test
   afterEach(async () => {
     await prisma.city.deleteMany();
-  });
-
-  // Clean state database after all tests
-  afterAll(async () => {
     await prisma.state.deleteMany();
   });
 
@@ -44,7 +39,7 @@ describe('CityController', () => {
     it('should create a city', async () => {
       const city = await controller.create({
         name: 'Jakarta',
-        id_state: 1,
+        id_state: stateId,
       });
 
       expect(city).toEqual({
@@ -52,8 +47,8 @@ describe('CityController', () => {
         message: 'City Created',
         data: {
           name: 'Jakarta',
-          id_state: 1,
-          id: 1,
+          id_state: stateId,
+          id: city.data.id,
         },
       });
     });
@@ -61,10 +56,10 @@ describe('CityController', () => {
 
   describe('findAll', () => {
     it('should return an array of cities', async () => {
-      await prisma.city.create({
+      const city = await prisma.city.create({
         data: {
           name: 'Jakarta',
-          id_state: 1,
+          id_state: stateId,
         },
       });
 
@@ -72,12 +67,12 @@ describe('CityController', () => {
 
       expect(cities).toEqual({
         success: true,
-        message: 'Cities Found',
+        message: 'Cities found',
         data: [
           {
             name: 'Jakarta',
-            id_state: 1,
-            id: 1,
+            id_state: stateId,
+            id: city.id,
           },
         ],
       });
@@ -86,22 +81,22 @@ describe('CityController', () => {
 
   describe('findOne', () => {
     it('should return a city', async () => {
-      await prisma.city.create({
+      const city = await prisma.city.create({
         data: {
           name: 'Jakarta',
-          id_state: 1,
+          id_state:  stateId,
         },
       });
 
-      const city = await controller.findOne(1);
+      const cityFound = await controller.findOne(city.id);
 
-      expect(city).toEqual({
+      expect(cityFound).toEqual({
         success: true,
-        message: 'City Found',
+        message: 'City found',
         data: {
           name: 'Jakarta',
-          id_state: 1,
-          id: 1,
+          id_state: stateId,
+          id: city.id,
         },
       });
     });

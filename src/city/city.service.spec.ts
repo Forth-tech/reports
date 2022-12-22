@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'src/common/services/prisma.service';
+import { PrismaService } from '../common/services/prisma.service';
 import { CityService } from './city.service';
 
 describe('CityService', () => {
   let service: CityService;
   let prisma: PrismaService;
+  let stateId: number;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -13,24 +14,18 @@ describe('CityService', () => {
 
     service = module.get<CityService>(CityService);
     prisma = module.get<PrismaService>(PrismaService);
-  });
 
-  beforeAll(async () => {
-    // Create a base state for testing
-    await prisma.state.create({
+    const state = await prisma.state.create({
       data: {
         name: 'Jakarta',
       },
     });
+    stateId = state.id;
   });
 
   // Clean city database after each test
   afterEach(async () => {
     await prisma.city.deleteMany();
-  });
-
-  // Clean state database after all tests
-  afterAll(async () => {
     await prisma.state.deleteMany();
   });
 
@@ -42,12 +37,12 @@ describe('CityService', () => {
     it('should create a city', async () => {
       const city = await service.create({
         name: 'Jakarta',
-        id_state: 1,
+        id_state: stateId,
       });
 
       expect(city).toBeDefined();
       expect(city.name).toEqual('Jakarta');
-      expect(city.id_state).toEqual(1);
+      expect(city.id_state).toEqual(stateId);
     });
   });
 
@@ -62,12 +57,12 @@ describe('CityService', () => {
     it('should return array of cities with two cities', async () => {
       await service.create({
         name: 'Jakarta',
-        id_state: 1,
+        id_state: stateId,
       });
 
       await service.create({
         name: 'Bandung',
-        id_state: 2,
+        id_state: stateId,
       });
 
       const cities = await service.findAll();
@@ -82,7 +77,7 @@ describe('CityService', () => {
     it('should return a city', async () => {
       const city = await service.create({
         name: 'Jakarta',
-        id_state: 1,
+        id_state: stateId,
       });
 
       const cityFound = await service.findOne(city.id);
@@ -90,7 +85,7 @@ describe('CityService', () => {
       expect(cityFound).toBeDefined();
       expect(cityFound).toBeInstanceOf(Object);
       expect(cityFound.name).toEqual('Jakarta');
-      expect(cityFound.id_state).toEqual(1);
+      expect(cityFound.id_state).toEqual(stateId);
     });
 
     it('should return null', async () => {
