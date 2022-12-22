@@ -31,7 +31,7 @@ import { PostCityRequestDto } from './dto/postCityRequest.dto';
 import { PostCityResponseDto } from './dto/postCityResponse.dto';
 import { CityOut } from './entities/city.entity';
 
-@Controller('city')
+@Controller('')
 export class CityController {
   constructor(private readonly cityService: CityService) {}
 

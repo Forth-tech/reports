@@ -30,7 +30,7 @@ import { PostStateResponseDto } from './dto/postStateResponse.dto';
 import { StateOut } from './entities/state.entity';
 import { StateService } from './state.service';
 
-@Controller('state')
+@Controller('')
 export class StateController {
   constructor(private readonly stateService: StateService) {}
 

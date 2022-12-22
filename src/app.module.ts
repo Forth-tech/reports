@@ -12,6 +12,7 @@ import { AdCampaignModule } from './ad-campaign/ad-campaign.module';
 import { RouterModule } from '@nestjs/core';
 import { CityModule } from './city/city.module';
 import { StateModule } from './state/state.module';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -23,6 +24,8 @@ import { StateModule } from './state/state.module';
     AdModule,
     AdCampaignModule,
     CityModule,
+    StateModule,
+    ClientModule,
     RouterModule.register([
       {
         path: 'ad',
@@ -33,10 +36,13 @@ import { StateModule } from './state/state.module';
     RouterModule.register([
       {
         path: 'bi',
-        children: [{ path: 'city', module: CityModule }],
+        children: [
+          { path: 'city', module: CityModule },
+          { path: 'state', module: StateModule },
+          { path: 'client', module: ClientModule },
+        ],
       },
     ]),
-    StateModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
