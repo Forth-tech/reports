@@ -15,9 +15,23 @@ describe('CityService', () => {
     prisma = module.get<PrismaService>(PrismaService);
   });
 
-  // Clean city table after each test
+  beforeAll(async () => {
+    // Create a base state for testing
+    await prisma.state.create({
+      data: {
+        name: 'Jakarta',
+      },
+    });
+  });
+
+  // Clean city database after each test
   afterEach(async () => {
     await prisma.city.deleteMany();
+  });
+
+  // Clean state database after all tests
+  afterAll(async () => {
+    await prisma.state.deleteMany();
   });
 
   it('should be defined', () => {
