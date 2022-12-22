@@ -21,6 +21,7 @@
 
 ```bash
 $ yarn install
+
 $ yarn migrate:dev
 ```
 

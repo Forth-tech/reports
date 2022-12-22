@@ -10,6 +10,7 @@ import { NetworkModule } from './network/network.module';
 import { AdModule } from './ad/ad.module';
 import { AdCampaignModule } from './ad-campaign/ad-campaign.module';
 import { RouterModule } from '@nestjs/core';
+import { CityModule } from './city/city.module';
 
 @Module({
   imports: [
@@ -20,11 +21,18 @@ import { RouterModule } from '@nestjs/core';
     NetworkModule,
     AdModule,
     AdCampaignModule,
+    CityModule,
     RouterModule.register([
       {
         path: 'ad',
         module: AdModule,
         children: [{ path: 'campaign', module: AdCampaignModule }],
+      },
+    ]),
+    RouterModule.register([
+      {
+        path: 'bi',
+        children: [{ path: 'city', module: CityModule }],
       },
     ]),
   ],
