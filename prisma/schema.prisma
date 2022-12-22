@@ -148,7 +148,7 @@ model Store {
   name         String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  internalCode String
+  internalCode String     @unique
   id_client    Int
   Client       Client     @relation(fields: [id_client], references: [id])
   id_city      Int
@@ -164,7 +164,7 @@ model Purchase {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  internalCode String
+  internalCode String   @unique
   nf           String
   id_store     Int
   Store        Store    @relation(fields: [id_store], references: [id])
@@ -193,7 +193,7 @@ model Item {
 model Product {
   id           Int      @id @default(autoincrement())
   name         String
-  internalCode String
+  internalCode String   @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   Item         Item[]
@@ -206,7 +206,7 @@ model Product {
 model Family {
   id           Int       @id @default(autoincrement())
   name         String
-  internalCode String
+  internalCode String    @unique
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   Product      Product[]
@@ -219,7 +219,7 @@ model Seller {
   name          String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  internalCode  String
+  internalCode  String      @unique
   Sale          Purchase[]
   Store         Store[]
   Supervisor    Supervisor? @relation(fields: [id_supervisor], references: [id])
@@ -231,7 +231,7 @@ model Seller {
 model Supervisor {
   id           Int      @id @default(autoincrement())
   name         String
-  internalCode String
+  internalCode String   @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   Seller       Seller[]
