@@ -13,6 +13,7 @@ import { RouterModule } from '@nestjs/core';
 import { CityModule } from './city/city.module';
 import { StateModule } from './state/state.module';
 import { ClientModule } from './client/client.module';
+import { StoreModule } from './store/store.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ClientModule } from './client/client.module';
     CityModule,
     StateModule,
     ClientModule,
+    StoreModule,
     RouterModule.register([
       {
         path: 'ad',
@@ -40,6 +42,7 @@ import { ClientModule } from './client/client.module';
           { path: 'city', module: CityModule },
           { path: 'state', module: StateModule },
           { path: 'client', module: ClientModule },
+          { path: 'store', module: StoreModule },
         ],
       },
     ]),
