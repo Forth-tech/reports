@@ -135,7 +135,7 @@ model State {
 model Client {
   id           Int      @id @default(autoincrement())
   name         String
-  internalCode String
+  internalCode String   @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   Store        Store[]

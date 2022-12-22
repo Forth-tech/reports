@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class ClientOut {
+export class PostClientRequestDto {
   @ApiProperty({
     description: 'Client Name',
     example: 'Jakarta',
@@ -12,20 +12,11 @@ export class ClientOut {
   name: string;
 
   @ApiProperty({
-    description: 'Internal Code on Client',
+    description: 'Client Internal Code',
     example: '1',
     required: true,
   })
   @IsString()
   @IsNotEmpty()
   internalCode: string;
-
-  @ApiProperty({
-    description: 'Client ID',
-    example: 1,
-    required: true,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  id: number;
 }
