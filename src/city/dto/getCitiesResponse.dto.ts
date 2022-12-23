@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
 import { CityOut } from '../entities/city.entity';
 
@@ -14,13 +14,17 @@ export class GetCitiesResponseDto extends DefaultResponseDto {
 
   @ApiProperty({
     description: 'Data containing the city',
-    example: {
-      name: 'Jakarta',
-      id_state: 1,
-      id: 1,
-    },
-    type: Array<CityOut>,
+    example: [
+      {
+        name: 'Jakarta',
+        id_state: 1,
+        id: 1,
+      },
+    ],
+    type: [CityOut],
+    isArray: true,
   })
+  @IsArray()
   @IsNotEmpty()
   data: CityOut[];
 }

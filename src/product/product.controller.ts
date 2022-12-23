@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   Query,
   HttpException,
@@ -24,8 +22,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Product } from '@prisma/client';
-import { JwtAccessTokenAuthGuard } from 'src/auth/jwt-access-token.guard';
-import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
+import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
 import { GetProductResponseDto } from './dto/getProductResponse.dto';
 import { GetProductsQueryDto } from './dto/getProductsQuery.dto';
 import { GetProductsResponseDto } from './dto/getProductsResponse.dto';

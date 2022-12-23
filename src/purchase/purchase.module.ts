@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import { PurchaseController } from './purchase.controller';
-import { PrismaService } from 'src/common/services/prisma.service';
+import { PrismaService } from '../common/services/prisma.service';
 
 @Module({
   controllers: [PurchaseController],

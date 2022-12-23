@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   Query,
   HttpException,
@@ -51,7 +49,7 @@ export class SellerController {
     description: 'Invalid data',
     type: DefaultResponseDto,
   })
-  @ApiBody({ type: PostSellerResponseDto })
+  @ApiBody({ type: PostSellerRequestDto })
   async create(
     @Body() createSellerDto: PostSellerRequestDto,
   ): Promise<PostSellerResponseDto> {

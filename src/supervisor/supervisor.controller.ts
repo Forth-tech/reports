@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   HttpException,
   HttpStatus,
@@ -31,7 +29,7 @@ import { PostSupervisorResponseDto } from './dto/postSupervisorResponse.dto';
 import { SupervisorOut } from './entities/supervisor.entity';
 import { SupervisorService } from './supervisor.service';
 
-@Controller('supervisor')
+@Controller('')
 export class SupervisorController {
   constructor(private readonly supervisorService: SupervisorService) {}
 

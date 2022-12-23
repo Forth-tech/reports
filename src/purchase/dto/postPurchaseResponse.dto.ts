@@ -6,14 +6,14 @@ import { PurchaseOut } from '../entities/purchase.entity';
 export class PostPurchaseResponseDto extends DefaultResponseDto {
   @ApiProperty({
     description: 'Message of the response.',
-    example: 'City Created',
+    example: 'Purchase Created',
   })
   @IsString()
   @IsNotEmpty()
   message: string;
 
   @ApiProperty({
-    description: 'Data containing the city',
+    description: 'Data containing the purchase',
     example: {
       internalCode: '123456789',
       id_seller: 1,

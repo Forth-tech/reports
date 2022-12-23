@@ -6,7 +6,7 @@ import { ClientOut } from '../entities/client.entity';
 export class GetClientResponseDto extends DefaultResponseDto {
   @ApiProperty({
     description: 'Message',
-    example: 'Client Created',
+    example: 'Client Found',
     required: true,
   })
   @IsString()

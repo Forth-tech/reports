@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
 import { SellerOut } from '../entities/seller.entity';
 
@@ -25,6 +25,7 @@ export class GetSellersResponseDto extends DefaultResponseDto {
     type: [SellerOut],
     isArray: true,
   })
+  @IsArray()
   @IsNotEmpty()
   data: SellerOut[];
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class PostItemRequestDto {
   @ApiProperty({
@@ -12,7 +12,7 @@ export class PostItemRequestDto {
   id_purchase: number;
 
   @ApiProperty({
-    description: 'Seller ID',
+    description: 'Product ID',
     example: 1,
     required: true,
   })

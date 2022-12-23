@@ -6,7 +6,7 @@ import { ClientOut } from '../entities/client.entity';
 export class GetClientsResponseDto extends DefaultResponseDto {
   @ApiProperty({
     description: 'Message',
-    example: 'Client Created',
+    example: 'Clients Found',
     required: true,
   })
   @IsString()
@@ -16,13 +16,15 @@ export class GetClientsResponseDto extends DefaultResponseDto {
   @ApiProperty({
     description: 'Client',
     required: true,
-    type: ClientOut,
+    type: [ClientOut],
     isArray: true,
-    example: {
-      id: 1,
-      name: 'Jakarta',
-      internalCode: '1',
-    },
+    example: [
+      {
+        id: 1,
+        name: 'Jakarta',
+        internalCode: '1',
+      },
+    ],
   })
   @IsNotEmpty()
   @IsArray()

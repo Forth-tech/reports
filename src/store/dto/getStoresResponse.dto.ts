@@ -16,7 +16,7 @@ export class GetStoresResponseDto extends DefaultResponseDto {
   @ApiProperty({
     description: 'Store',
     required: true,
-    type: StoreOut,
+    type: [StoreOut],
     isArray: true,
     example: [
       {

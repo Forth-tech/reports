@@ -6,14 +6,14 @@ import { ItemOut } from '../entities/item.entity';
 export class GetItemsResponseDto extends DefaultResponseDto {
   @ApiProperty({
     description: 'Message of the response.',
-    example: 'City Created',
+    example: 'Item Found',
   })
   @IsString()
   @IsNotEmpty()
   message: string;
 
   @ApiProperty({
-    description: 'Data containing the city',
+    description: 'Data containing the Items',
     example: [
       {
         id_purchase: 1,

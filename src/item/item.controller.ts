@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   Query,
   HttpException,
@@ -23,8 +21,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Item } from '@prisma/client';
-import { JwtAccessTokenAuthGuard } from 'src/auth/jwt-access-token.guard';
-import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
+import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
 import { GetItemsQueryDto } from './dto/getItemQuery.dto';
 import { GetItemResponseDto } from './dto/getItemResponse.dto';
 import { GetItemsResponseDto } from './dto/getItemsResponse.dto';
@@ -82,7 +80,7 @@ export class ItemController {
   async findAll(
     @Query() query?: GetItemsQueryDto,
   ): Promise<GetItemsResponseDto> {
-    const items: Item[] = await this.itemService.findAll();
+    const items: Item[] = await this.itemService.findAll(query);
 
     const itemsOut: ItemOut[] = items.map((item: Item) => {
       return this.itemService.mapItemToItemOut(item);

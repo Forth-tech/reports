@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   HttpException,
   HttpStatus,
@@ -70,11 +68,11 @@ export class ClientController {
   @ApiTags('client')
   @ApiOperation({ summary: 'Clients Found' })
   @ApiFoundResponse({
-    description: 'Client created',
+    description: 'Client found',
     type: GetClientsResponseDto,
   })
   @ApiDefaultResponse({
-    description: 'Client not created',
+    description: 'Client not found',
     type: DefaultResponseDto,
   })
   async findAll(): Promise<GetClientsResponseDto> {
@@ -97,11 +95,11 @@ export class ClientController {
   @ApiTags('client')
   @ApiOperation({ summary: 'Client Found' })
   @ApiFoundResponse({
-    description: 'Client created',
+    description: 'Client found',
     type: GetClientResponseDto,
   })
   @ApiDefaultResponse({
-    description: 'Client not created',
+    description: 'Client not found',
     type: DefaultResponseDto,
   })
   @ApiNotFoundResponse({

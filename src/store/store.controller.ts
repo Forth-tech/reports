@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
   Query,
   HttpException,
@@ -70,13 +69,13 @@ export class StoreController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
   @ApiTags('store')
-  @ApiOperation({ summary: 'Store found' })
+  @ApiOperation({ summary: 'Stores found' })
   @ApiCreatedResponse({
-    description: 'Store found',
+    description: 'Stores found',
     type: GetStoresResponseDto,
   })
   @ApiDefaultResponse({
-    description: 'Client not found',
+    description: 'Store not found',
     type: DefaultResponseDto,
   })
   @ApiQuery({ type: GetStoresQueryDto })
@@ -106,7 +105,7 @@ export class StoreController {
     type: GetStoreResponseDto,
   })
   @ApiDefaultResponse({
-    description: 'Client not found',
+    description: 'Store not found',
     type: DefaultResponseDto,
   })
   @ApiParam({ name: 'id', type: Number })
@@ -130,13 +129,13 @@ export class StoreController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
   @ApiTags('store')
-  @ApiOperation({ summary: 'Store found' })
+  @ApiOperation({ summary: 'Store updated' })
   @ApiCreatedResponse({
-    description: 'Store found',
+    description: 'Store updated',
     type: PatchStoreResponseDto,
   })
   @ApiDefaultResponse({
-    description: 'Client not found',
+    description: 'Store not found',
     type: DefaultResponseDto,
   })
   @ApiParam({ name: 'id', type: Number })

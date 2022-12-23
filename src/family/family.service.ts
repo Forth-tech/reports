@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Family } from '@prisma/client';
-import { PrismaService } from 'src/common/services/prisma.service';
+import { PrismaService } from '../common/services/prisma.service';
 import { PostFamilyRequestDto } from './dto/postFamilyRequest.dto';
 import { FamilyOut } from './entities/family.entity';
 

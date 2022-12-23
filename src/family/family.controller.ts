@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   HttpException,
   HttpStatus,
@@ -22,8 +20,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Family } from '@prisma/client';
-import { JwtAccessTokenAuthGuard } from 'src/auth/jwt-access-token.guard';
-import { DefaultResponseDto } from 'src/common/dto/defaultResponse.dto';
+import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
+import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
 import { GetFamiliesResponseDto } from './dto/getFamiliesResponse.dto';
 import { GetFamilyResponseDto } from './dto/getFamilyResponse.dto';
 import { PostFamilyRequestDto } from './dto/postFamilyRequest.dto';

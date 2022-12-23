@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   Query,
   HttpException,
@@ -42,7 +40,7 @@ export class PurchaseController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
   @ApiTags('purchase')
-  @ApiOperation({ summary: 'Create a new city' })
+  @ApiOperation({ summary: 'Create a new purchase' })
   @ApiCreatedResponse({
     description: 'Purchase created',
     type: PostPurchaseResponseDto,
@@ -104,7 +102,7 @@ export class PurchaseController {
   @UseGuards(JwtAccessTokenAuthGuard)
   @ApiCookieAuth()
   @ApiTags('purchase')
-  @ApiOperation({ summary: 'Get all purchases' })
+  @ApiOperation({ summary: 'Get a purchase' })
   @ApiFoundResponse({
     description: 'Purchase found',
     type: PurchaseOut,
