@@ -48,7 +48,7 @@ export class FamilyController {
     description: 'Invalid data',
     type: DefaultResponseDto,
   })
-  @ApiBody({ type: PostFamilyResponseDto })
+  @ApiBody({ type: PostFamilyRequestDto })
   async create(
     @Body() createFamilyDto: PostFamilyRequestDto,
   ): Promise<PostFamilyResponseDto> {
