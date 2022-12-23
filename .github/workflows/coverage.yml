@@ -4,24 +4,65 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    environment: Tests
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [18.x]
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: reports-test
+          MYSQL_USER: prisma
+          MYSQL_PASSWORD: senhatemp
+        ports:
+          - 3306:3306
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: yarn install
-    
-    - name: Run tests
-      run: yarn test:cov
+      - name: Install dependencies
+        run: yarn install
+
+      - name: 'Create env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env.test
+          cat .env.test
+
+      - name: Sleep for 120 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '120s'
+
+      - name: Migrate database
+        run: yarn migrate:test
+
+      - name: Create coverage folder
+        run: mkdir coverage
+
+      - name: Run tests
+        run: yarn test:cov
+
+      # - name: Monitor coverage
+      #   uses: slavcodev/coverage-monitor-action@v1
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     coverage_path: "coverage/clover.xml"
+      #     threshold_alert: 10
+      #     threshold_warning: 50
+      #     threshold_metric: "lines"
