@@ -17,6 +17,7 @@ import { StoreModule } from './store/store.module';
 import { PurchaseModule } from './purchase/purchase.module';
 import { ItemModule } from './item/item.module';
 import { ProductModule } from './product/product.module';
+import { FamilyModule } from './family/family.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ProductModule } from './product/product.module';
     PurchaseModule,
     ItemModule,
     ProductModule,
+    FamilyModule,
     RouterModule.register([
       {
         path: 'ad',
@@ -52,6 +54,7 @@ import { ProductModule } from './product/product.module';
           { path: 'purchase', module: PurchaseModule },
           { path: 'item', module: ItemModule },
           { path: 'product', module: ProductModule },
+          { path: 'family', module: FamilyModule },
         ],
       },
     ]),
