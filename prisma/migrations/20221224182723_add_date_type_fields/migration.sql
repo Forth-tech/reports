@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `TB_Purchase` ADD COLUMN `date` DATETIME(3) NULL,
+    ADD COLUMN `type` VARCHAR(191) NULL;

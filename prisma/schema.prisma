@@ -166,6 +166,8 @@ model Purchase {
   updatedAt    DateTime @updatedAt
   internalCode String   @unique
   nf           String
+  date         DateTime?
+  type         String?
   id_store     Int
   Store        Store    @relation(fields: [id_store], references: [id])
   Item         Item[]
@@ -188,6 +190,7 @@ model Item {
   Product     Product  @relation(fields: [id_product], references: [id])
 
   @@map("TB_PurchaseItem")
+  @@unique([id_purchase, id_product])
 }
 
 model Product {
