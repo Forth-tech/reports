@@ -74,5 +74,11 @@ describe('StateService', () => {
       expect(stateById.name).toEqual('Test State');
       expect(stateById.id).toEqual(state.id);
     });
+
+    it('should not find state by id', async () => {
+      const state = await service.findOne(1);
+
+      expect(state).toBeNull();
+    });
   });
 });

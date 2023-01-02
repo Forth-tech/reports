@@ -7,7 +7,7 @@ describe('StoreService', () => {
   let prisma: PrismaService;
   let id_state, id_city, id_seller, id_client: number;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [StoreService, PrismaService],
     }).compile();
@@ -52,13 +52,26 @@ describe('StoreService', () => {
     ).id;
   });
 
+  beforeEach(async () => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [StoreService, PrismaService],
+      }).compile();
+  
+      service = module.get<StoreService>(StoreService);
+      prisma = module.get<PrismaService>(PrismaService);
+    });
+
+  afterAll(async () => {
+    // Delete State, City, Client and Seller after each test
+    await prisma.state.deleteMany();
+    await prisma.city.deleteMany();
+    await prisma.seller.deleteMany();
+    await prisma.client.deleteMany();
+  });
+
   // Clean database after each test
   afterEach(async () => {
     await prisma.store.deleteMany();
-    await prisma.client.deleteMany();
-    await prisma.city.deleteMany();
-    await prisma.seller.deleteMany();
-    await prisma.state.deleteMany();
   });
 
   it('should be defined', () => {
@@ -140,7 +153,7 @@ describe('StoreService', () => {
       await prisma.client.create({
         data: {
           name: 'Client',
-          internalCode: 'Client',
+          internalCode: 'Client1',
         },
       });
 

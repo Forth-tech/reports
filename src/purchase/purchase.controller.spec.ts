@@ -8,7 +8,8 @@ describe('PurchaseController', () => {
   let prisma: PrismaService;
   let id_state, id_city, id_seller, id_client, id_store: number;
 
-  beforeEach(async () => {
+
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PurchaseController],
       providers: [PurchaseService, PrismaService],
@@ -64,16 +65,33 @@ describe('PurchaseController', () => {
         },
       })
     ).id;
+
+    module.close();
+  });
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [PurchaseController],
+      providers: [PurchaseService, PrismaService],
+    }).compile();
+
+    controller = module.get<PurchaseController>(PurchaseController);
+    prisma = module.get<PrismaService>(PrismaService);
   });
 
   // Clean the table after each test
-  afterEach(async () => {
+  afterAll(async () => {
     await prisma.purchase.deleteMany();
     await prisma.store.deleteMany();
     await prisma.seller.deleteMany();
     await prisma.client.deleteMany();
     await prisma.city.deleteMany();
     await prisma.state.deleteMany();
+  });
+
+  afterEach(async () => {
+    await prisma.purchase.deleteMany();
+    await prisma.$disconnect();
   });
 
   it('should be defined', () => {
@@ -180,7 +198,7 @@ describe('PurchaseController', () => {
     });
 
     it('should throw an error if the purchase does not exist', async () => {
-      await expect(controller.findOne(1)).toBe(null);
+      await expect(controller.findOne(1)).rejects.toThrowError();
     });
   });
 });
