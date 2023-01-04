@@ -21,6 +21,7 @@ model User {
   hashedPassword String
   hash           String
   RefreshToken   RefreshToken[]
+  Audit          Audit[]
 }
 
 model RefreshToken {
@@ -166,6 +167,8 @@ model Purchase {
   updatedAt    DateTime @updatedAt
   internalCode String   @unique
   nf           String
+  date         DateTime?
+  type         String?
   id_store     Int
   Store        Store    @relation(fields: [id_store], references: [id])
   Item         Item[]
@@ -237,4 +240,30 @@ model Supervisor {
   Seller       Seller[]
 
   @@map("TB_Supervisor")
+}
+
+// Audits
+
+model Audit {
+  id            Int        @id @default(autoincrement())
+  createdAt     DateTime   @default(now())
+  id_auditevent Int
+  id_external   Int
+  AuditEvent    AuditEvent @relation(fields: [id_auditevent], references: [id])
+  id_user       Int
+  information   String
+  User          User       @relation(fields: [id_user], references: [id])
+
+  @@map("TB_Audit")
+}
+
+model AuditEvent {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  id_mappedto  String
+  description  String
+  Audit        Audit[]
+
+  @@map("TB_AuditEvent")
 }

@@ -7,11 +7,12 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  Request,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
   ApiNotFoundResponse,
@@ -20,6 +21,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Supervisor } from '@prisma/client';
+import { AuditEventEnum } from '../common/enums/auditEventEnum';
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { AuditService } from '../common/services/audit.service';
 import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
 import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
 import { GetSupervisorResponseDto } from './dto/getSupervisorResponse.dto';
@@ -31,11 +35,14 @@ import { SupervisorService } from './supervisor.service';
 
 @Controller('')
 export class SupervisorController {
-  constructor(private readonly supervisorService: SupervisorService) {}
+  constructor(
+    private readonly supervisorService: SupervisorService,
+    private readonly auditService: AuditService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('supervisor')
   @ApiOperation({ summary: 'Create a new Supervisor' })
   @ApiCreatedResponse({
@@ -48,6 +55,7 @@ export class SupervisorController {
   })
   @ApiBody({ type: PostSupervisorRequestDto })
   async create(
+    @Request() req: FastifyRequestWithUser,
     @Body() createSupervisorDto: PostSupervisorRequestDto,
   ): Promise<PostSupervisorResponseDto> {
     const supervisor: Supervisor = await this.supervisorService.create(
@@ -56,6 +64,13 @@ export class SupervisorController {
 
     const supervisorOut: SupervisorOut =
       this.supervisorService.mapSupervisorToSupervisorOut(supervisor);
+
+    this.auditService.createAuditLog(
+      req.user.id,
+      AuditEventEnum.SupervisorCreated,
+      supervisorOut.id,
+      JSON.stringify(supervisorOut),
+    );
 
     return {
       success: true,
@@ -66,7 +81,7 @@ export class SupervisorController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('Supervisor')
   @ApiOperation({ summary: 'Find all Supervisors' })
   @ApiFoundResponse({
@@ -94,7 +109,7 @@ export class SupervisorController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('product')
   @ApiOperation({ summary: 'Find a Supervisor by id' })
   @ApiFoundResponse({

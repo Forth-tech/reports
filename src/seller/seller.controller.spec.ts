@@ -47,7 +47,7 @@ describe('SellerController', () => {
     await prisma.supervisor.deleteMany();
     await prisma.$disconnect();
   });
-  
+
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
@@ -123,7 +123,9 @@ describe('SellerController', () => {
         id_supervisor: id_supervisor,
       });
 
-      const sellers = await controller.findAll({id_supervisor: id_supervisor});
+      const sellers = await controller.findAll({
+        id_supervisor: id_supervisor,
+      });
 
       expect(sellers.data).toHaveLength(1);
       expect(sellers.data[0]).toHaveProperty('id');

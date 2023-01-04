@@ -7,10 +7,11 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  Request,
 } from '@nestjs/common';
 import {
   ApiBody,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiDefaultResponse,
   ApiFoundResponse,
@@ -28,14 +29,20 @@ import { Client } from '@prisma/client';
 import { ClientOut } from './entities/client.entity';
 import { GetClientResponseDto } from './dto/getClientResponse.dto';
 import { GetClientsResponseDto } from './dto/getClientsResponse.dto';
+import { AuditService } from '../common/services/audit.service';
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { AuditEventEnum } from '../common/enums/auditEventEnum';
 
 @Controller('')
 export class ClientController {
-  constructor(private readonly clientService: ClientService) {}
+  constructor(
+    private readonly clientService: ClientService,
+    private readonly auditService: AuditService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('client')
   @ApiOperation({ summary: 'Client Created' })
   @ApiCreatedResponse({
@@ -48,12 +55,20 @@ export class ClientController {
   })
   @ApiBody({ type: PostClientRequestDto })
   async create(
+    @Request() req: FastifyRequestWithUser,
     @Body() createClientDto: PostClientRequestDto,
   ): Promise<PostClientResponseDto> {
     const client: Client = await this.clientService.create(createClientDto);
 
     const clientOut: ClientOut =
       this.clientService.mapClientToClientOut(client);
+
+    this.auditService.createAuditLog(
+      req.user.id,
+      AuditEventEnum.ClientCreated,
+      client.id,
+      JSON.stringify(clientOut),
+    );
 
     return {
       success: true,
@@ -64,7 +79,7 @@ export class ClientController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('client')
   @ApiOperation({ summary: 'Clients Found' })
   @ApiFoundResponse({
@@ -91,7 +106,7 @@ export class ClientController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('client')
   @ApiOperation({ summary: 'Client Found' })
   @ApiFoundResponse({

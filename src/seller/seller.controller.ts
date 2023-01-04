@@ -8,11 +8,12 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  Request,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
   ApiNotFoundResponse,
@@ -22,6 +23,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Seller } from '@prisma/client';
+import { AuditEventEnum } from '../common/enums/auditEventEnum';
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { AuditService } from '../common/services/audit.service';
 import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
 import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
 import { GetSellerResponseDto } from './dto/getSellerResponse.dto';
@@ -34,11 +38,14 @@ import { SellerService } from './seller.service';
 
 @Controller('')
 export class SellerController {
-  constructor(private readonly sellerService: SellerService) {}
+  constructor(
+    private readonly sellerService: SellerService,
+    private readonly auditService: AuditService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('seller')
   @ApiOperation({ summary: 'Create a new Seller' })
   @ApiCreatedResponse({
@@ -51,12 +58,20 @@ export class SellerController {
   })
   @ApiBody({ type: PostSellerRequestDto })
   async create(
+    @Request() req: FastifyRequestWithUser,
     @Body() createSellerDto: PostSellerRequestDto,
   ): Promise<PostSellerResponseDto> {
     const seller: Seller = await this.sellerService.create(createSellerDto);
 
     const sellerOut: SellerOut =
       this.sellerService.mapSellerToSellerOut(seller);
+
+    this.auditService.createAuditLog(
+      req.user.id,
+      AuditEventEnum.SellerCreated,
+      seller.id,
+      JSON.stringify(sellerOut),
+    );
 
     return {
       success: true,
@@ -67,7 +82,7 @@ export class SellerController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('seller')
   @ApiOperation({ summary: 'Find all Sellers' })
   @ApiFoundResponse({
@@ -97,7 +112,7 @@ export class SellerController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('seller')
   @ApiOperation({ summary: 'Find a Seller by id' })
   @ApiFoundResponse({
@@ -113,7 +128,10 @@ export class SellerController {
     type: DefaultResponseDto,
   })
   @ApiParam({ name: 'id', description: 'Seller id', type: Number })
-  async findOne(@Param('id') id: number): Promise<GetSellerResponseDto> {
+  async findOne(
+    @Request() req: FastifyRequestWithUser,
+    @Param('id') id: number,
+  ): Promise<GetSellerResponseDto> {
     const seller: Seller | null = await this.sellerService.findOne(id);
 
     if (!seller) {
@@ -122,6 +140,13 @@ export class SellerController {
 
     const SellerOut: SellerOut =
       this.sellerService.mapSellerToSellerOut(seller);
+
+    this.auditService.createAuditLog(
+      req.user.id,
+      AuditEventEnum.ViewSeller,
+      seller.id,
+      JSON.stringify(SellerOut),
+    );
 
     return {
       success: true,

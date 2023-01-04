@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Param,
+  Request,
   UseGuards,
   Query,
   HttpException,
@@ -15,7 +16,7 @@ import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
   ApiNotFoundResponse,
@@ -31,14 +32,20 @@ import { PurchaseOut } from './entities/purchase.entity';
 import { GetPurchasesQueryDto } from './dto/getPurchasesQuery.dto';
 import { GetPurchasesResponseDto } from './dto/getPurchasesResponse.dto';
 import { GetPurchaseResponseDto } from './dto/getPurchaseResponse.dto';
+import { FastifyRequestWithUser } from 'src/common/interfaces/customFastifyRequest';
+import { AuditService } from 'src/common/services/audit.service';
+import { AuditEventEnum } from 'src/common/enums/auditEventEnum';
 
 @Controller('')
 export class PurchaseController {
-  constructor(private readonly purchaseService: PurchaseService) {}
+  constructor(
+    private readonly purchaseService: PurchaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('purchase')
   @ApiOperation({ summary: 'Create a new purchase' })
   @ApiCreatedResponse({
@@ -51,6 +58,7 @@ export class PurchaseController {
   })
   @ApiBody({ type: PostPurchaseRequestDto })
   async create(
+    @Request() request: FastifyRequestWithUser,
     @Body() createPurchaseDto: PostPurchaseRequestDto,
   ): Promise<PostPurchaseResponseDto> {
     const purchase: Purchase = await this.purchaseService.create(
@@ -59,6 +67,13 @@ export class PurchaseController {
 
     const purchaseOut: PurchaseOut =
       this.purchaseService.mapPurchaseToPurchaseOut(purchase);
+
+    this.auditService.createAuditLog(
+      request.user.id,
+      AuditEventEnum.PurchaseCreated,
+      purchase.id,
+      JSON.stringify(purchaseOut),
+    );
 
     return {
       success: true,
@@ -69,7 +84,7 @@ export class PurchaseController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('purchase')
   @ApiOperation({ summary: 'Get all purchases' })
   @ApiFoundResponse({
@@ -83,6 +98,7 @@ export class PurchaseController {
   })
   @ApiQuery({ type: GetPurchasesQueryDto })
   async findAll(
+    @Request() request: FastifyRequestWithUser,
     @Query() query?: GetPurchasesQueryDto,
   ): Promise<GetPurchasesResponseDto> {
     const purchases: Purchase[] = await this.purchaseService.findAll(query);
@@ -100,7 +116,7 @@ export class PurchaseController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('purchase')
   @ApiOperation({ summary: 'Get a purchase' })
   @ApiFoundResponse({
@@ -116,7 +132,10 @@ export class PurchaseController {
     type: DefaultResponseDto,
   })
   @ApiParam({ name: 'id', type: 'number' })
-  async findOne(@Param('id') id: number): Promise<GetPurchaseResponseDto> {
+  async findOne(
+    @Request() request: FastifyRequestWithUser,
+    @Param('id') id: number,
+  ): Promise<GetPurchaseResponseDto> {
     const purchase: Purchase | null = await this.purchaseService.findOne(id);
 
     if (!purchase) {
@@ -125,6 +144,13 @@ export class PurchaseController {
 
     const purchaseOut: PurchaseOut =
       this.purchaseService.mapPurchaseToPurchaseOut(purchase);
+
+    this.auditService.createAuditLog(
+      request.user.id,
+      AuditEventEnum.ViewPurchase,
+      purchase.id,
+      JSON.stringify(purchaseOut),
+    );
 
     return {
       success: true,

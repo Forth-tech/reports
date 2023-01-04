@@ -11,7 +11,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
   ApiNotFoundResponse,
@@ -35,7 +35,7 @@ export class FamilyController {
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('family')
   @ApiOperation({ summary: 'Create a new Family' })
   @ApiCreatedResponse({
@@ -64,7 +64,7 @@ export class FamilyController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('family')
   @ApiOperation({ summary: 'Find all families' })
   @ApiFoundResponse({
@@ -91,7 +91,7 @@ export class FamilyController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('product')
   @ApiOperation({ summary: 'Find a family by id' })
   @ApiFoundResponse({

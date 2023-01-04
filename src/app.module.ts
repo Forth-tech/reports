@@ -20,6 +20,7 @@ import { ProductModule } from './product/product.module';
 import { FamilyModule } from './family/family.module';
 import { SellerModule } from './seller/seller.module';
 import { SupervisorModule } from './supervisor/supervisor.module';
+import { AuditService } from './common/services/audit.service';
 
 @Module({
   imports: [
@@ -66,6 +67,6 @@ import { SupervisorModule } from './supervisor/supervisor.module';
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, AuditService],
 })
 export class AppModule {}

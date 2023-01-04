@@ -53,13 +53,13 @@ describe('StoreService', () => {
   });
 
   beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        providers: [StoreService, PrismaService],
-      }).compile();
-  
-      service = module.get<StoreService>(StoreService);
-      prisma = module.get<PrismaService>(PrismaService);
-    });
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [StoreService, PrismaService],
+    }).compile();
+
+    service = module.get<StoreService>(StoreService);
+    prisma = module.get<PrismaService>(PrismaService);
+  });
 
   afterAll(async () => {
     // Delete State, City, Client and Seller after each test

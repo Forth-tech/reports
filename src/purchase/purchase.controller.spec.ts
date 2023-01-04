@@ -8,7 +8,6 @@ describe('PurchaseController', () => {
   let prisma: PrismaService;
   let id_state, id_city, id_seller, id_client, id_store: number;
 
-
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PurchaseController],
