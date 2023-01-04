@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
   ApiNotFoundResponse,
@@ -37,7 +37,7 @@ export class CityController {
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('city')
   @ApiOperation({ summary: 'Create a new city' })
   @ApiCreatedResponse({
@@ -64,7 +64,7 @@ export class CityController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('city')
   @ApiOperation({ summary: 'Create a new city' })
   @ApiFoundResponse({
@@ -92,7 +92,7 @@ export class CityController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('city')
   @ApiOperation({ summary: 'Get a city by id' })
   @ApiFoundResponse({

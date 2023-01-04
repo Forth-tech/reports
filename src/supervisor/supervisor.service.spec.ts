@@ -18,7 +18,7 @@ describe('SupervisorService', () => {
 
   afterEach(async () => {
     const deleteAllSupervisor = prisma.supervisor.deleteMany;
-    
+
     await deleteAllSupervisor();
   });
 
@@ -46,10 +46,12 @@ describe('SupervisorService', () => {
       expect(supervisor).toBeDefined();
       expect(supervisor.name).toEqual('Test Supervisor');
 
-      await expect(service.create({
-        name: 'Test Supervisor 2',
-        internalCode: 'Test Supervisor',
-      })).rejects.toThrowError();
+      await expect(
+        service.create({
+          name: 'Test Supervisor 2',
+          internalCode: 'Test Supervisor',
+        }),
+      ).rejects.toThrowError();
     });
   });
 

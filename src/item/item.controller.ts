@@ -8,11 +8,12 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  Request,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
   ApiOperation,
@@ -21,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Item } from '@prisma/client';
+import { AuditService } from '../common/services/audit.service';
 import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
 import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
 import { GetItemsQueryDto } from './dto/getItemQuery.dto';
@@ -30,14 +32,19 @@ import { PostItemRequestDto } from './dto/postItemRequest.dto';
 import { PostItemResponseDto } from './dto/postItemResponse.dto';
 import { ItemOut } from './entities/item.entity';
 import { ItemService } from './item.service';
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { AuditEventEnum } from '../common/enums/auditEventEnum';
 
 @Controller('')
 export class ItemController {
-  constructor(private readonly itemService: ItemService) {}
+  constructor(
+    private readonly itemService: ItemService,
+    private readonly auditService: AuditService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('item')
   @ApiOperation({ summary: 'Create a new Item' })
   @ApiCreatedResponse({
@@ -50,11 +57,19 @@ export class ItemController {
   })
   @ApiBody({ type: PostItemRequestDto })
   async create(
+    @Request() req: FastifyRequestWithUser,
     @Body() createItemDto: PostItemRequestDto,
   ): Promise<PostItemResponseDto> {
     const item: Item = await this.itemService.create(createItemDto);
 
     const itemOut: ItemOut = this.itemService.mapItemToItemOut(item);
+
+    this.auditService.createAuditLog(
+      req.user.id,
+      AuditEventEnum.ItemCreated,
+      item.id,
+      JSON.stringify(itemOut),
+    );
 
     return {
       success: true,
@@ -65,7 +80,7 @@ export class ItemController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('item')
   @ApiOperation({ summary: 'Find Items' })
   @ApiFoundResponse({
@@ -95,7 +110,7 @@ export class ItemController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('item')
   @ApiOperation({ summary: 'Find Item' })
   @ApiFoundResponse({
@@ -107,7 +122,10 @@ export class ItemController {
     type: DefaultResponseDto,
   })
   @ApiParam({ name: 'id', type: 'number' })
-  async findOne(@Param('id') id: number) {
+  async findOne(
+    @Request() req: FastifyRequestWithUser,
+    @Param('id') id: number,
+  ) {
     const item: Item | null = await this.itemService.findOne(id);
 
     if (!item) {
@@ -115,6 +133,13 @@ export class ItemController {
     }
 
     const itemOut: ItemOut = this.itemService.mapItemToItemOut(item);
+
+    this.auditService.createAuditLog(
+      req.user.id,
+      AuditEventEnum.ViewItem,
+      item.id,
+      JSON.stringify(itemOut),
+    );
 
     return {
       success: true,

@@ -47,10 +47,12 @@ describe('SupervisorController', () => {
       expect(supervisor).toBeDefined();
       expect(supervisor.data.name).toEqual('Test Supervisor');
 
-      await expect(controller.create({
-        name: 'Test Supervisor 2',
-        internalCode: 'Test Supervisor',
-      })).rejects.toThrowError();
+      await expect(
+        controller.create({
+          name: 'Test Supervisor 2',
+          internalCode: 'Test Supervisor',
+        }),
+      ).rejects.toThrowError();
     });
   });
 
