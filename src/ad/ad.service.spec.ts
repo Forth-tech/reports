@@ -12,7 +12,6 @@ describe('AdService', () => {
     }).compile();
 
     service = module.get<AdService>(AdService);
-    
   });
 
   it('should be defined', () => {

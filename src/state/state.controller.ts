@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBody,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiDefaultResponse,
   ApiFoundResponse,
@@ -34,7 +34,7 @@ export class StateController {
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('state')
   @ApiOperation({ summary: 'State Created' })
   @ApiCreatedResponse({
@@ -62,7 +62,7 @@ export class StateController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('state')
   @ApiOperation({ summary: 'States Found' })
   @ApiFoundResponse({
@@ -90,7 +90,7 @@ export class StateController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('state')
   @ApiOperation({ summary: 'State Found' })
   @ApiFoundResponse({

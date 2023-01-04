@@ -120,7 +120,7 @@ describe('SellerService', () => {
       const sellers = await service.findAll({ id_supervisor: id_supervisor });
 
       expect(sellers).toHaveLength(1);
-    })
+    });
 
     it('should return an empty array if there are no sellers with the given supervisor', async () => {
       const sellers = await service.findAll({ id_supervisor: id_supervisor });

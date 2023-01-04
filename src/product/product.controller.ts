@@ -8,11 +8,12 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  Request,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiCookieAuth,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiFoundResponse,
   ApiNotFoundResponse,
@@ -22,6 +23,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Product } from '@prisma/client';
+import { AuditEventEnum } from '../common/enums/auditEventEnum';
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { AuditService } from '../common/services/audit.service';
 import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
 import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
 import { GetProductResponseDto } from './dto/getProductResponse.dto';
@@ -34,11 +38,14 @@ import { ProductService } from './product.service';
 
 @Controller('')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly auditService: AuditService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('product')
   @ApiOperation({ summary: 'Create a new Product' })
   @ApiCreatedResponse({
@@ -51,12 +58,20 @@ export class ProductController {
   })
   @ApiBody({ type: PostProductRequestDto })
   async create(
+    @Request() req: FastifyRequestWithUser,
     @Body() createProductDto: PostProductRequestDto,
   ): Promise<PostProductResponseDto> {
     const product: Product = await this.productService.create(createProductDto);
 
     const productOut: ProductOut =
       this.productService.mapProductToProductOut(product);
+
+    this.auditService.createAuditLog(
+      req.user.id,
+      AuditEventEnum.ProductCreated,
+      product.id,
+      JSON.stringify(productOut),
+    );
 
     return {
       success: true,
@@ -67,7 +82,7 @@ export class ProductController {
 
   @Get()
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('product')
   @ApiOperation({ summary: 'Find all products' })
   @ApiFoundResponse({
@@ -97,7 +112,7 @@ export class ProductController {
 
   @Get(':id')
   @UseGuards(JwtAccessTokenAuthGuard)
-  @ApiCookieAuth()
+  @ApiBearerAuth()
   @ApiTags('product')
   @ApiOperation({ summary: 'Find a Product' })
   @ApiCreatedResponse({
