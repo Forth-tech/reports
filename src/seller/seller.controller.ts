@@ -35,6 +35,9 @@ import { PostSellerRequestDto } from './dto/postSellerRequest.dto';
 import { PostSellerResponseDto } from './dto/postSellerResponse.dto';
 import { SellerOut } from './entities/Seller.entity';
 import { SellerService } from './seller.service';
+import { SellerDailyResult, SellerMonthlyResult, SellerTotalResult, SellerWeeklyResult } from './entities/sellerMontlhyResult.entity';
+import { GetSellerMonthlyResultResponseDto } from './dto/getSellerMonthlyResultResponse.dto';
+import { GetSellersResultsQueryDto } from './dto/getSellersResultsQuery.dto';
 
 @Controller('')
 export class SellerController {
@@ -152,6 +155,67 @@ export class SellerController {
       success: true,
       message: 'Seller found',
       data: SellerOut,
+    };
+  }
+
+  @Get(':id/results')
+  @UseGuards(JwtAccessTokenAuthGuard)
+  @ApiBearerAuth()
+  @ApiTags('seller')
+  @ApiOperation({ summary: 'Find a Seller Monthly Result' })
+  @ApiFoundResponse({
+    description: 'Seller found',
+    type: GetSellerMonthlyResultResponseDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid data',
+    type: DefaultResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'Seller not found',
+    type: DefaultResponseDto,
+  })
+  @ApiQuery({ type: GetSellersResultsQueryDto, required: false })
+  @ApiParam({ name: 'id', description: 'Seller id', type: Number })
+  async montlhyResult(
+    @Request() req: FastifyRequestWithUser,
+    @Query() query: GetSellersResultsQueryDto,
+    @Param('id') id: number,
+  ): Promise<GetSellerMonthlyResultResponseDto> {
+    const seller: Seller | null = await this.sellerService.findOne(id);
+
+    if (!seller) {
+      throw new HttpException('Seller not found', HttpStatus.NOT_FOUND);
+    }
+
+    let result: SellerMonthlyResult[] | SellerWeeklyResult[] | SellerDailyResult[] | SellerTotalResult;
+
+    switch(query.format) {
+      case 'monthly': {
+        result = await this.sellerService.getMonthlyResults(id, query);
+        break;
+      }
+      case 'weekly': {
+        result = await this.sellerService.getWeeklyResults(id, query);
+        break;
+      }
+      case 'daily': {
+        result = await this.sellerService.getDailyResults(id, query);
+        break;
+      }
+      case 'total': {
+        result = await this.sellerService.getTotalResults(id, query);
+        break;
+      }
+      default: {
+        throw new HttpException('Invalid format', HttpStatus.BAD_REQUEST);
+      }
+    }  
+
+    return {
+      success: true,
+      message: 'Seller found',
+      data: result,
     };
   }
 }
