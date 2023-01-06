@@ -35,9 +35,17 @@ import { PostSellerRequestDto } from './dto/postSellerRequest.dto';
 import { PostSellerResponseDto } from './dto/postSellerResponse.dto';
 import { SellerOut } from './entities/Seller.entity';
 import { SellerService } from './seller.service';
-import { SellerDailyResult, SellerMonthlyResult, SellerTotalResult, SellerWeeklyResult } from './entities/sellerMontlhyResult.entity';
-import { GetSellerMonthlyResultResponseDto } from './dto/getSellerMonthlyResultResponse.dto';
+import {
+  SalesDailyResult,
+  SalesMonthlyResult,
+  SalesTotalResult,
+  SalesWeeklyResult,
+} from '../common/entities/salesResults.entity';
+import { GetSalesResultResponseDto } from '../common/dto/getSalesResultResponse.dto';
 import { GetSellersResultsQueryDto } from './dto/getSellersResultsQuery.dto';
+import { ClientAbcCurve } from '../common/entities/clientAbcCurve.entity';
+import { GetAbcCurveResponseDto } from '../common/dto/getAbcCurveResponse.dto';
+import { GetSellersAbcCurveQueryDto } from './dto/getSellersAbcCurveQuery.dto';
 
 @Controller('')
 export class SellerController {
@@ -165,7 +173,7 @@ export class SellerController {
   @ApiOperation({ summary: 'Find a Seller Monthly Result' })
   @ApiFoundResponse({
     description: 'Seller found',
-    type: GetSellerMonthlyResultResponseDto,
+    type: GetSalesResultResponseDto,
   })
   @ApiBadRequestResponse({
     description: 'Invalid data',
@@ -181,16 +189,20 @@ export class SellerController {
     @Request() req: FastifyRequestWithUser,
     @Query() query: GetSellersResultsQueryDto,
     @Param('id') id: number,
-  ): Promise<GetSellerMonthlyResultResponseDto> {
+  ): Promise<GetSalesResultResponseDto> {
     const seller: Seller | null = await this.sellerService.findOne(id);
 
     if (!seller) {
       throw new HttpException('Seller not found', HttpStatus.NOT_FOUND);
     }
 
-    let result: SellerMonthlyResult[] | SellerWeeklyResult[] | SellerDailyResult[] | SellerTotalResult;
+    let result:
+      | SalesMonthlyResult[]
+      | SalesWeeklyResult[]
+      | SalesDailyResult[]
+      | SalesTotalResult;
 
-    switch(query.format) {
+    switch (query.format) {
       case 'monthly': {
         result = await this.sellerService.getMonthlyResults(id, query);
         break;
@@ -210,12 +222,50 @@ export class SellerController {
       default: {
         throw new HttpException('Invalid format', HttpStatus.BAD_REQUEST);
       }
-    }  
+    }
 
     return {
       success: true,
       message: 'Seller found',
       data: result,
+    };
+  }
+
+  @Get(':id/abc-curve')
+  @UseGuards(JwtAccessTokenAuthGuard)
+  @ApiBearerAuth()
+  @ApiTags('seller')
+  @ApiOperation({ summary: 'Find a Seller by id' })
+  @ApiFoundResponse({
+    description: 'Seller found',
+    type: GetAbcCurveResponseDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid data',
+    type: DefaultResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'Seller not found',
+    type: DefaultResponseDto,
+  })
+  @ApiParam({ name: 'id', description: 'Seller id', type: Number })
+  async findAbcCurve(
+    @Request() req: FastifyRequestWithUser,
+    @Param('id') id: number,
+    @Query() query: GetSellersAbcCurveQueryDto,
+  ): Promise<GetAbcCurveResponseDto> {
+    const seller: Seller | null = await this.sellerService.findOne(id);
+
+    if (!seller) {
+      throw new HttpException('Seller not found', HttpStatus.NOT_FOUND);
+    }
+
+    const abcCurve: ClientAbcCurve = await this.sellerService.getSellerAbcCurve(id, query);
+
+    return {
+      success: true,
+      message: 'Seller found',
+      data: abcCurve,
     };
   }
 }

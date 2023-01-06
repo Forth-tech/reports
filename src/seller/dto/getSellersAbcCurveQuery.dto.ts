@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsOptional } from 'class-validator';
 
-export class GetSellersResultsQueryDto {
+export class GetSellersAbcCurveQueryDto {
   @ApiProperty({
     description: 'Start date of the query',
     example: '2021-01-01',
@@ -19,16 +19,6 @@ export class GetSellersResultsQueryDto {
   @IsDate()
   @IsOptional()
   end_date?: Date;
-
-  @ApiProperty({
-    description: 'Format of the query',
-    example: 'monthly',
-    required: false,
-  })
-  @IsString()
-  @IsEnum(['monthly', 'weekly', 'daily', 'total'])
-  @IsOptional()
-  format = 'monthly';
 
   @ApiProperty({
     description: 'Products',
