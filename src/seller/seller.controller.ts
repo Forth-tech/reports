@@ -46,6 +46,7 @@ import { GetSellersResultsQueryDto } from './dto/getSellersResultsQuery.dto';
 import { ClientAbcCurve } from '../common/entities/clientAbcCurve.entity';
 import { GetAbcCurveResponseDto } from '../common/dto/getAbcCurveResponse.dto';
 import { GetSellersAbcCurveQueryDto } from './dto/getSellersAbcCurveQuery.dto';
+import { grantPermission } from '../utils/grantPermission.guard';
 
 @Controller('')
 export class SellerController {
@@ -143,6 +144,9 @@ export class SellerController {
     @Request() req: FastifyRequestWithUser,
     @Param('id') id: number,
   ): Promise<GetSellerResponseDto> {
+    if (!(await grantPermission('seller', 'GET', id, req.user))) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
     const seller: Seller | null = await this.sellerService.findOne(id);
 
     if (!seller) {
@@ -190,6 +194,9 @@ export class SellerController {
     @Query() query: GetSellersResultsQueryDto,
     @Param('id') id: number,
   ): Promise<GetSalesResultResponseDto> {
+    if (!(await grantPermission('seller', 'GET', id, req.user))) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
     const seller: Seller | null = await this.sellerService.findOne(id);
 
     if (!seller) {
@@ -254,6 +261,9 @@ export class SellerController {
     @Param('id') id: number,
     @Query() query: GetSellersAbcCurveQueryDto,
   ): Promise<GetAbcCurveResponseDto> {
+    if (!(await grantPermission('seller', 'GET', id, req.user))) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
     const seller: Seller | null = await this.sellerService.findOne(id);
 
     if (!seller) {

@@ -53,6 +53,7 @@ export class UsersController {
       body.email,
       saltAndHash.hash,
       saltAndHash.salt,
+      body.role,
     );
 
     const userOut: UserOutDto = this.usersService.mapUserToUserOut(user);
