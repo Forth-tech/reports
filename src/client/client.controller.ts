@@ -32,6 +32,8 @@ import { GetClientsResponseDto } from './dto/getClientsResponse.dto';
 import { AuditService } from '../common/services/audit.service';
 import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
 import { AuditEventEnum } from '../common/enums/auditEventEnum';
+import { RfmClassification } from '../common/entities/rfmClassification.entity';
+import { GetRfmClassificationResponseDto } from 'src/common/dto/getRfmClassificationResponse.dto';
 
 @Controller('')
 export class ClientController {
@@ -101,6 +103,30 @@ export class ClientController {
       success: true,
       message: 'Clients found',
       data: clientsOut,
+    };
+  }
+
+  @Get('/rfm')
+  @UseGuards(JwtAccessTokenAuthGuard)
+  @ApiBearerAuth()
+  @ApiTags('client')
+  @ApiOperation({ summary: 'Clients Found' })
+  @ApiFoundResponse({
+    description: 'Client found',
+    type: GetRfmClassificationResponseDto,
+  })
+  @ApiDefaultResponse({
+    description: 'Client not found',
+    type: DefaultResponseDto,
+  })
+  async getRfm(): Promise<GetRfmClassificationResponseDto> {
+    const rfmClassification: RfmClassification[] =
+      await this.clientService.getRfmClassification();
+
+    return {
+      success: true,
+      message: 'Clients found',
+      data: rfmClassification,
     };
   }
 

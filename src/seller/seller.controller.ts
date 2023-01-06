@@ -260,7 +260,10 @@ export class SellerController {
       throw new HttpException('Seller not found', HttpStatus.NOT_FOUND);
     }
 
-    const abcCurve: ClientAbcCurve = await this.sellerService.getSellerAbcCurve(id, query);
+    const abcCurve: ClientAbcCurve = await this.sellerService.getSellerAbcCurve(
+      id,
+      query,
+    );
 
     return {
       success: true,
