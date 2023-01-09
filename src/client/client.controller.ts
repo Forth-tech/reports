@@ -93,8 +93,10 @@ export class ClientController {
     description: 'Client not found',
     type: DefaultResponseDto,
   })
-  async findAll(): Promise<GetClientsResponseDto> {
-    const clients: Client[] = await this.clientService.findAll();
+  async findAll(
+    @Request() req: FastifyRequestWithUser,
+  ): Promise<GetClientsResponseDto> {
+    const clients: Client[] = await this.clientService.findAll(req.user);
 
     const clientsOut: ClientOut[] = clients.map((client: Client) =>
       this.clientService.mapClientToClientOut(client),

@@ -96,9 +96,10 @@ export class StoreController {
   })
   @ApiQuery({ type: GetStoresQueryDto })
   async findAll(
+    @Request() req: FastifyRequestWithUser,
     @Query() query?: GetStoresQueryDto,
   ): Promise<GetStoresResponseDto> {
-    const stores: Store[] = await this.storeService.findAll(query);
+    const stores: Store[] = await this.storeService.findAll(req.user, query);
 
     const storesOut: StoreOut[] = stores.map((store: Store) =>
       this.storeService.mapStoreToStoreOut(store),

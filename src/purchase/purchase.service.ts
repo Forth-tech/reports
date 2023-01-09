@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Purchase } from '@prisma/client';
+import { Purchase, Roles, User } from '@prisma/client';
 import { PrismaService } from '../common/services/prisma.service';
 import { GetPurchasesQueryDto } from './dto/getPurchasesQuery.dto';
 import { PostPurchaseRequestDto } from './dto/postPurchaseRequest.dto';
@@ -22,18 +22,35 @@ export class PurchaseService {
 
   async findAll(
     query: GetPurchasesQueryDto,
+    user: User,
     page?: number,
   ): Promise<Purchase[]> {
+    let permissionFilter = undefined;
+    if (user.Role === Roles.SELLER) {
+      permissionFilter = {
+        id: user.id_external,
+      };
+    } else if (user.Role === Roles.SUPERVISOR) {
+      permissionFilter = {
+        Supervisor: {
+          id: user.id_external,
+        },
+      };
+    }
     if (!query) {
       return this.prismaService.purchase.findMany({
         skip: page ? (page - 1) * 10 : 0,
         take: 10,
+        where: {
+          Seller: permissionFilter,
+        },
       });
     }
     return this.prismaService.purchase.findMany({
       where: {
         id_seller: query.id_seller ? query.id_seller : undefined,
         id_store: query.id_store ? query.id_store : undefined,
+        Seller: permissionFilter,
       },
       skip: page ? (page - 1) * 10 : 0,
       take: 10,

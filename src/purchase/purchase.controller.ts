@@ -102,7 +102,10 @@ export class PurchaseController {
     @Request() request: FastifyRequestWithUser,
     @Query() query?: GetPurchasesQueryDto,
   ): Promise<GetPurchasesResponseDto> {
-    const purchases: Purchase[] = await this.purchaseService.findAll(query);
+    const purchases: Purchase[] = await this.purchaseService.findAll(
+      query,
+      request.user,
+    );
 
     const purchasesOut: PurchaseOut[] = purchases.map((purchase: Purchase) => {
       return this.purchaseService.mapPurchaseToPurchaseOut(purchase);

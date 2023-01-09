@@ -107,9 +107,10 @@ export class SellerController {
   })
   @ApiQuery({ type: GetSellersQueryDto, required: false })
   async findAll(
+    @Request() req: FastifyRequestWithUser,
     @Query() query?: GetSellersQueryDto,
   ): Promise<GetSellersResponseDto> {
-    const sellers: Seller[] = await this.sellerService.findAll(query);
+    const sellers: Seller[] = await this.sellerService.findAll(req.user, query);
 
     const sellersOut: SellerOut[] = sellers.map((seller: Seller) =>
       this.sellerService.mapSellerToSellerOut(seller),

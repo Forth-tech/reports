@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Store } from '@prisma/client';
+import { Roles, Store, User } from '@prisma/client';
 import { PrismaService } from '../common/services/prisma.service';
 import { GetStoresQueryDto } from './dto/getStoresQuery.dto';
 import { PatchStoreRequestDto } from './dto/patchStoreRequest.dto';
@@ -22,15 +22,30 @@ export class StoreService {
     });
   }
 
-  async findAll(query?: GetStoresQueryDto): Promise<Store[]> {
+  async findAll(user: User, query?: GetStoresQueryDto): Promise<Store[]> {
     if (!query) {
       return this.prismaService.store.findMany();
+    }
+    let sellerFilter;
+    if (user.Role === Roles.SELLER) {
+      sellerFilter = {
+        id: user.id,
+      };
+    } else if (user.Role === Roles.SUPERVISOR) {
+      sellerFilter = {
+        Supervisor: {
+          id: user.id,
+        },
+      };
+    } else {
+      sellerFilter = undefined;
     }
     return this.prismaService.store.findMany({
       where: {
         id_client: query.id_client ? query.id_client : undefined,
         id_seller: query.id_seller ? query.id_seller : undefined,
         id_city: query.id_city ? query.id_city : undefined,
+        Seller: sellerFilter,
       },
     });
   }

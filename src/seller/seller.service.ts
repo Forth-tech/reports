@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Seller } from '@prisma/client';
+import { Prisma, Roles, Seller, User } from '@prisma/client';
 import { PrismaService } from '../common/services/prisma.service';
 import { GetSellersAbcCurveQueryDto } from './dto/getSellersAbcCurveQuery.dto';
 import { GetSellersQueryDto } from './dto/getSellersQuery.dto';
@@ -27,10 +27,17 @@ export class SellerService {
     });
   }
 
-  async findAll(query?: GetSellersQueryDto): Promise<Seller[]> {
+  async findAll(user: User, query?: GetSellersQueryDto): Promise<Seller[]> {
+    let permissionFilter = undefined;
+    if (user.Role === Roles.SUPERVISOR) {
+      permissionFilter = {
+        id: user.id_external,
+      };
+    }
     return this.prismaService.seller.findMany({
       where: {
         id_supervisor: query?.id_supervisor,
+        Supervisor: permissionFilter,
       },
     });
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Client } from '@prisma/client';
+import { Client, Roles, User } from '@prisma/client';
 import { RfmClassification } from '../common/entities/rfmClassification.entity';
 import { PrismaService } from '../common/services/prisma.service';
 import { PostClientRequestDto } from './dto/postClientRequest.dto';
@@ -18,8 +18,28 @@ export class ClientService {
     });
   }
 
-  async findAll(): Promise<Client[]> {
-    return this.prismaService.client.findMany();
+  async findAll(user: User): Promise<Client[]> {
+    let permissionFilter = undefined;
+    if (user.Role === Roles.SELLER) {
+      permissionFilter = {
+        id: user.id_external,
+      };
+    } else if (user.Role === Roles.SUPERVISOR) {
+      permissionFilter = {
+        Supervisor: {
+          id: user.id_external,
+        },
+      };
+    }
+    return this.prismaService.client.findMany({
+      where: {
+        Store: {
+          some: {
+            Seller: permissionFilter,
+          },
+        },
+      },
+    });
   }
 
   async findOne(id: number): Promise<Client | null> {
