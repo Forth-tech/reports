@@ -36,6 +36,7 @@ import { PostStoreRequestDto } from './dto/postStoreRequest.dto';
 import { PostStoreResponseDto } from './dto/postStoreResponse.dto';
 import { StoreOut } from './entities/store.entity';
 import { StoreService } from './store.service';
+import { grantPermission } from '../utils/grantPermission.guard';
 
 @Controller('')
 export class StoreController {
@@ -95,9 +96,10 @@ export class StoreController {
   })
   @ApiQuery({ type: GetStoresQueryDto })
   async findAll(
+    @Request() req: FastifyRequestWithUser,
     @Query() query?: GetStoresQueryDto,
   ): Promise<GetStoresResponseDto> {
-    const stores: Store[] = await this.storeService.findAll(query);
+    const stores: Store[] = await this.storeService.findAll(req.user, query);
 
     const storesOut: StoreOut[] = stores.map((store: Store) =>
       this.storeService.mapStoreToStoreOut(store),
@@ -124,7 +126,13 @@ export class StoreController {
     type: DefaultResponseDto,
   })
   @ApiParam({ name: 'id', type: Number })
-  async findOne(@Param('id') id: number): Promise<GetStoreResponseDto> {
+  async findOne(
+    @Request() req: FastifyRequestWithUser,
+    @Param('id') id: number,
+  ): Promise<GetStoreResponseDto> {
+    if (!(await grantPermission('store', 'GET', id, req.user))) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
     const store: Store | null = await this.storeService.findOne(id);
 
     if (!store) {
@@ -160,6 +168,9 @@ export class StoreController {
     @Param('id') id: number,
     @Body() updateStoreDto: PatchStoreRequestDto,
   ): Promise<PatchStoreResponseDto> {
+    if (!(await grantPermission('store', 'GET', id, req.user))) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
     const store: Store | null = await this.storeService.findOne(id);
 
     if (!store) {

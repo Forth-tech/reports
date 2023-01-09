@@ -32,9 +32,10 @@ import { PurchaseOut } from './entities/purchase.entity';
 import { GetPurchasesQueryDto } from './dto/getPurchasesQuery.dto';
 import { GetPurchasesResponseDto } from './dto/getPurchasesResponse.dto';
 import { GetPurchaseResponseDto } from './dto/getPurchaseResponse.dto';
-import { FastifyRequestWithUser } from 'src/common/interfaces/customFastifyRequest';
-import { AuditService } from 'src/common/services/audit.service';
-import { AuditEventEnum } from 'src/common/enums/auditEventEnum';
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { AuditService } from '../common/services/audit.service';
+import { AuditEventEnum } from '../common/enums/auditEventEnum';
+import { grantPermission } from '../utils/grantPermission.guard';
 
 @Controller('')
 export class PurchaseController {
@@ -101,7 +102,10 @@ export class PurchaseController {
     @Request() request: FastifyRequestWithUser,
     @Query() query?: GetPurchasesQueryDto,
   ): Promise<GetPurchasesResponseDto> {
-    const purchases: Purchase[] = await this.purchaseService.findAll(query);
+    const purchases: Purchase[] = await this.purchaseService.findAll(
+      query,
+      request.user,
+    );
 
     const purchasesOut: PurchaseOut[] = purchases.map((purchase: Purchase) => {
       return this.purchaseService.mapPurchaseToPurchaseOut(purchase);
@@ -136,6 +140,9 @@ export class PurchaseController {
     @Request() request: FastifyRequestWithUser,
     @Param('id') id: number,
   ): Promise<GetPurchaseResponseDto> {
+    if (!(await grantPermission('purchase', 'GET', id, request.user))) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
     const purchase: Purchase | null = await this.purchaseService.findOne(id);
 
     if (!purchase) {

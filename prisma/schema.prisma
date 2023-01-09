@@ -20,8 +20,10 @@ model User {
   name           String?
   hashedPassword String
   hash           String
+  id_external    Int?
   RefreshToken   RefreshToken[]
   Audit          Audit[]
+  Role           Roles
 }
 
 model RefreshToken {
@@ -109,6 +111,14 @@ enum Format {
   VIDEO
 }
 
+enum Roles {
+  SELLER
+  SUPERVISOR
+  MANAGER
+  VIEWER
+  MASTER
+}
+
 // Vendas
 
 model City {
@@ -162,17 +172,17 @@ model Store {
 }
 
 model Purchase {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  internalCode String   @unique
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  internalCode String    @unique
   nf           String
   date         DateTime?
   type         String?
   id_store     Int
-  Store        Store    @relation(fields: [id_store], references: [id])
+  Store        Store     @relation(fields: [id_store], references: [id])
   Item         Item[]
-  Seller       Seller?  @relation(fields: [id_seller], references: [id])
+  Seller       Seller?   @relation(fields: [id_seller], references: [id])
   id_seller    Int?
 
   @@map("TB_Purchase")
@@ -258,12 +268,12 @@ model Audit {
 }
 
 model AuditEvent {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  id_mappedto  String
-  description  String
-  Audit        Audit[]
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  id_mappedto String
+  description String
+  Audit       Audit[]
 
   @@map("TB_AuditEvent")
 }
