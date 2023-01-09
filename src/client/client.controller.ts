@@ -33,7 +33,8 @@ import { AuditService } from '../common/services/audit.service';
 import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
 import { AuditEventEnum } from '../common/enums/auditEventEnum';
 import { RfmClassification } from '../common/entities/rfmClassification.entity';
-import { GetRfmClassificationResponseDto } from 'src/common/dto/getRfmClassificationResponse.dto';
+import { GetRfmClassificationResponseDto } from '../common/dto/getRfmClassificationResponse.dto';
+import { grantPermission } from '../utils/grantPermission.guard';
 
 @Controller('')
 export class ClientController {
@@ -119,7 +120,9 @@ export class ClientController {
     description: 'Client not found',
     type: DefaultResponseDto,
   })
-  async getRfm(): Promise<GetRfmClassificationResponseDto> {
+  async getRfm(
+    @Request() req: FastifyRequestWithUser,
+  ): Promise<GetRfmClassificationResponseDto> {
     const rfmClassification: RfmClassification[] =
       await this.clientService.getRfmClassification();
 
@@ -148,7 +151,13 @@ export class ClientController {
     type: DefaultResponseDto,
   })
   @ApiParam({ name: 'id', type: 'number' })
-  async findOne(@Param('id') id: number): Promise<GetClientResponseDto> {
+  async findOne(
+    @Request() req: FastifyRequestWithUser,
+    @Param('id') id: number,
+  ): Promise<GetClientResponseDto> {
+    if (!(await grantPermission('purchase', 'GET', id, req.user))) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
     const client: Client | null = await this.clientService.findOne(id);
 
     if (!client) {
