@@ -1,4 +1,3 @@
-import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../common/services/prisma.service';
 import { NetworkController } from './network.controller';

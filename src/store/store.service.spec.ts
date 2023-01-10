@@ -69,6 +69,7 @@ describe('StoreService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+    expect(prisma).toBeDefined();
   });
 
   describe('getAll', () => {
