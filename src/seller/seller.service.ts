@@ -5,7 +5,7 @@ import { GetSellersAbcCurveQueryDto } from './dto/getSellersAbcCurveQuery.dto';
 import { GetSellersQueryDto } from './dto/getSellersQuery.dto';
 import { GetSellersResultsQueryDto } from './dto/getSellersResultsQuery.dto';
 import { PostSellerRequestDto } from './dto/postSellerRequest.dto';
-import { SellerOut } from './entities/Seller.entity';
+import { SellerOut } from './entities/seller.entity';
 import { ClientAbcCurve } from '../common/entities/clientAbcCurve.entity';
 import {
   SalesDailyResult,

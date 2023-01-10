@@ -15,14 +15,8 @@ describe('UsersService', () => {
     prisma = module.get<PrismaService>(PrismaService);
   });
 
-  afterEach(async () => {
-    const deleteAllUsers = prisma.user.deleteMany;
-
-    await deleteAllUsers();
-    prisma.$disconnect();
-  });
-
   it('should be defined', () => {
     expect(service).toBeDefined();
+    expect(prisma).toBeDefined();
   });
 });

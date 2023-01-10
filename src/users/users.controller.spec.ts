@@ -17,14 +17,8 @@ describe('UsersController', () => {
     prisma = module.get<PrismaService>(PrismaService);
   });
 
-  afterEach(async () => {
-    const deleteAllUsers = prisma.user.deleteMany;
-
-    await deleteAllUsers();
-    prisma.$disconnect();
-  });
-
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(prisma).toBeDefined();
   });
 });
