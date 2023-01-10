@@ -24,66 +24,96 @@ export async function grantPermission(
   prisma.$connect();
 
   let result = true;
-  let store: Store;
-  let client: Client;
-  let seller: Seller;
-  let purchase: Purchase;
 
   switch (object) {
     case 'seller':
-      if (user.Role === Roles.SELLER) result = filter === user.id_external;
-      if (user.Role === Roles.SUPERVISOR) {
-        seller = await prisma.seller.findFirst({
-          where: { id: filter },
-        });
-        result = seller.id_supervisor === user.id_external;
-      }
+      result = await handleSellerPermission(prisma, user, filter);
       break;
     case 'store':
-      store = await prisma.store.findFirst({
-        where: { id: filter },
-      });
-      if (user.Role === Roles.SELLER) {
-        result = store.id_seller === user.id_external;
-      } else if (user.Role === Roles.SUPERVISOR) {
-        seller = await prisma.seller.findFirst({
-          where: { id: store.id_seller },
-        });
-        result = seller.id_supervisor === user.id_external;
-      }
+      result = await handleStorePermission(prisma, user, filter);
       break;
     case 'client':
-      client = await prisma.client.findFirst({
-        where: { id: filter },
-      });
-      store = await prisma.store.findFirst({
-        where: { id_client: client.id },
-      });
-      if (user.Role === Roles.SELLER) {
-        result = store.id_seller === user.id_external;
-      } else if (user.Role === Roles.SUPERVISOR) {
-        seller = await prisma.seller.findFirst({
-          where: { id: store.id_seller },
-        });
-        result = seller.id_supervisor === user.id_external;
-      }
+      result = await handleClientPermission(prisma, user, filter);
       break;
     case 'purchase':
-      purchase = await prisma.purchase.findFirst({
-        where: { id: filter },
-      });
-      if (user.Role === Roles.SELLER) {
-        result = purchase.id_seller === user.id_external;
-      } else if (user.Role === Roles.SUPERVISOR) {
-        seller = await prisma.seller.findFirst({
-          where: { id: purchase.id_seller },
-        });
-        result = seller.id_supervisor === user.id_external;
-      }
+      result = await handlePurchasePermission(prisma, user, filter);
+      break;
     default:
       result = false;
+      break;
   }
 
   prisma.$disconnect();
   return result;
+}
+
+async function handlePurchasePermission(
+  prisma: PrismaClient,
+  user: User,
+  filter: number,
+): Promise<boolean> {
+  const purchase: Purchase = await prisma.purchase.findFirst({
+    where: { id: filter },
+  });
+  if (user.Role === Roles.SELLER) {
+    return purchase.id_seller === user.id_external;
+  } else if (user.Role === Roles.SUPERVISOR) {
+    const seller: Seller = await prisma.seller.findFirst({
+      where: { id: purchase.id_seller },
+    });
+    return seller.id_supervisor === user.id_external;
+  }
+}
+
+async function handleClientPermission(
+  prisma: PrismaClient,
+  user: User,
+  filter: number,
+): Promise<boolean> {
+  const client: Client = await prisma.client.findFirst({
+    where: { id: filter },
+  });
+  const store: Store = await prisma.store.findFirst({
+    where: { id_client: client.id },
+  });
+  if (user.Role === Roles.SELLER) {
+    return store.id_seller === user.id_external;
+  } else if (user.Role === Roles.SUPERVISOR) {
+    const seller: Seller = await prisma.seller.findFirst({
+      where: { id: store.id_seller },
+    });
+    return seller.id_supervisor === user.id_external;
+  }
+}
+
+async function handleStorePermission(
+  prisma: PrismaClient,
+  user: User,
+  filter: number,
+): Promise<boolean> {
+  const store: Store = await prisma.store.findFirst({
+    where: { id: filter },
+  });
+  if (user.Role === Roles.SELLER) {
+    return store.id_seller === user.id_external;
+  } else if (user.Role === Roles.SUPERVISOR) {
+    const seller: Seller = await prisma.seller.findFirst({
+      where: { id: store.id_seller },
+    });
+    return seller.id_supervisor === user.id_external;
+  }
+}
+
+async function handleSellerPermission(
+  prisma: PrismaClient,
+  user: User,
+  filter: number,
+): Promise<boolean> {
+  if (user.Role === Roles.SELLER) return filter === user.id_external;
+  if (user.Role === Roles.SUPERVISOR) {
+    const seller: Seller = await prisma.seller.findFirst({
+      where: { id: filter },
+    });
+    return seller.id_supervisor === user.id_external;
+  }
 }

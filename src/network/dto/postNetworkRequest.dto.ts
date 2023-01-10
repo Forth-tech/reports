@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Format, Network } from '@prisma/client';
+import { Network } from '@prisma/client';
 
 export class PostNetworkRequestDto {
   @ApiProperty({
