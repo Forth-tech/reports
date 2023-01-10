@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
-import { SellerOut } from '../entities/Seller.entity';
+import { SellerOut } from '../entities/seller.entity';
 
 export class PostSellerResponseDto extends DefaultResponseDto {
   @ApiProperty({
