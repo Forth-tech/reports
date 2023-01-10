@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Daily, Network } from '@prisma/client';
+import { Daily } from '@prisma/client';
 import { PrismaService } from '../common/services/prisma.service';
 import { GetDailyQueryDto } from './dto/getDailyQuery.dto';
 import { PatchDailyRequestDto } from './dto/patchDailyRequest.dto';

@@ -3,10 +3,7 @@ import { Network } from '@prisma/client';
 import {
   IsDate,
   IsEnum,
-  IsNotEmpty,
-  IsNumber,
   IsOptional,
-  IsPositive,
   IsString,
 } from 'class-validator';
 
