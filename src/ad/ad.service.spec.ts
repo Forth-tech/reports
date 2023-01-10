@@ -4,7 +4,6 @@ import { AdService } from './ad.service';
 
 describe('AdService', () => {
   let service: AdService;
-  let prisma: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
