@@ -75,4 +75,13 @@ describe('StateService', () => {
       expect(state.id).toEqual(testState1Id);
     });
   });
+
+  describe('mapToStateOut', () => {
+    it('should map a state to state out', () => {
+      const storeOut = service.mapStateToStateOut(oneState);
+
+      expect(storeOut).toBeDefined();
+      expect(storeOut.name).toEqual(oneState.name);
+    });
+  });
 });
