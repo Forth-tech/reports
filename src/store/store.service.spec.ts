@@ -104,4 +104,13 @@ describe('StoreService', () => {
       expect(store.name).toEqual(testStore1);
     });
   });
+
+  describe('mapToStoreOut', () => {
+    it('should map a store to a store out', () => {
+      const storeOut = service.mapStoreToStoreOut(oneStore);
+
+      expect(storeOut).toBeDefined();
+      expect(storeOut.name).toEqual(testStore1);
+    });
+  });
 });
