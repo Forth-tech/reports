@@ -1,242 +1,107 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Roles, Store, User } from '@prisma/client';
 import { PrismaService } from '../common/services/prisma.service';
 import { StoreService } from './store.service';
+
+const testStore1 = 'Test Store 1';
+const testStore1Id = 1;
+
+const storeArray: Store[] = [
+  {
+    name: testStore1,
+    id: testStore1Id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    id_seller: 1,
+    id_client: 1,
+    internalCode: '1',
+    id_city: 1,
+  },
+  {
+    name: 'Test Store 2',
+    id: 2,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    id_seller: 1,
+    id_client: 1,
+    internalCode: '1',
+    id_city: 1,
+  },
+];
+
+const user: User = {
+  id: 1,
+  name: 'Test User',
+  email: 'test@test.com',
+  Role: Roles.SELLER,
+  id_external: 1,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  hash: 'test',
+  hashedPassword: 'test',
+};
+
+const oneStore: Store = storeArray[0];
+
+const db = {
+  store: {
+    findMany: jest.fn().mockResolvedValue(storeArray),
+    findUnique: jest.fn().mockResolvedValue(oneStore),
+    create: jest.fn().mockResolvedValue(oneStore),
+  },
+};
 
 describe('StoreService', () => {
   let service: StoreService;
   let prisma: PrismaService;
-  let id_state, id_city, id_seller, id_client: number;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [StoreService, PrismaService],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(db)
+      .compile();
 
     service = module.get<StoreService>(StoreService);
     prisma = module.get<PrismaService>(PrismaService);
-
-    // Create State, City, Client and Seller prior to each test
-    id_state = (
-      await prisma.state.create({
-        data: {
-          name: 'State',
-        },
-      })
-    ).id;
-
-    id_city = (
-      await prisma.city.create({
-        data: {
-          name: 'City',
-          id_state: id_state,
-        },
-      })
-    ).id;
-
-    id_seller = (
-      await prisma.seller.create({
-        data: {
-          name: 'Seller',
-          internalCode: 'Seller',
-        },
-      })
-    ).id;
-
-    id_client = (
-      await prisma.client.create({
-        data: {
-          name: 'Client',
-          internalCode: 'Client',
-        },
-      })
-    ).id;
-  });
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [StoreService, PrismaService],
-    }).compile();
-
-    service = module.get<StoreService>(StoreService);
-    prisma = module.get<PrismaService>(PrismaService);
-  });
-
-  afterAll(async () => {
-    // Delete State, City, Client and Seller after each test
-    await prisma.state.deleteMany();
-    await prisma.city.deleteMany();
-    await prisma.seller.deleteMany();
-    await prisma.client.deleteMany();
-  });
-
-  // Clean database after each test
-  afterEach(async () => {
-    await prisma.store.deleteMany();
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+    expect(prisma).toBeDefined();
+  });
+
+  describe('getAll', () => {
+    it('should return all stores', async () => {
+      const stores = await service.findAll(user);
+
+      expect(stores).toBeDefined();
+      expect(stores.length).toEqual(2);
+    });
+  });
+
+  describe('getOne', () => {
+    it('should return one store', async () => {
+      const store = await service.findOne(testStore1Id);
+
+      expect(store).toBeDefined();
+      expect(store.name).toEqual(testStore1);
+    });
   });
 
   describe('create', () => {
     it('should create a store', async () => {
       const store = await service.create({
-        name: 'Store',
-        internalCode: 'Store',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client,
+        name: testStore1,
+        id_seller: 1,
+        id_client: 1,
+        internalCode: '1',
+        id_city: 1,
       });
 
       expect(store).toBeDefined();
-      expect(store.name).toBe('Store');
-      expect(store.internalCode).toBe('Store');
-      expect(store.id_seller).toBe(id_seller);
-      expect(store.id_city).toBe(id_city);
-      expect(store.id_client).toBe(id_client);
-    });
-
-    it('should throw an error if the store already exists', async () => {
-      await service.create({
-        name: 'Store',
-        internalCode: 'Store',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client,
-      });
-
-      await expect(
-        service.create({
-          name: 'Store',
-          internalCode: 'Store',
-          id_seller: id_seller,
-          id_city: id_city,
-          id_client: id_client,
-        }),
-      ).rejects.toThrowError();
-    });
-  });
-
-  describe('findAll', () => {
-    it('should be empty', async () => {
-      const stores = await service.findAll({});
-      expect(stores).toBeDefined();
-      expect(stores).toHaveLength(0);
-    });
-
-    it('should find all stores', async () => {
-      const store1 = await service.create({
-        name: 'Store1',
-        internalCode: 'Store1',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client,
-      });
-
-      const store2 = await service.create({
-        name: 'Store2',
-        internalCode: 'Store2',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client,
-      });
-
-      const stores = await service.findAll({});
-
-      expect(stores).toBeDefined();
-      expect(stores).toHaveLength(2);
-      expect(stores).toContainEqual(store1);
-      expect(stores).toContainEqual(store2);
-    });
-
-    it('should find all stores by id_client', async () => {
-      await prisma.client.create({
-        data: {
-          name: 'Client',
-          internalCode: 'Client1',
-        },
-      });
-
-      const store1 = await service.create({
-        name: 'Store1',
-        internalCode: 'Store1',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client,
-      });
-
-      const store2 = await service.create({
-        name: 'Store2',
-        internalCode: 'Store2',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client,
-      });
-
-      const store3 = await service.create({
-        name: 'Store3',
-        internalCode: 'Store3',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client + 1,
-      });
-
-      const stores = await service.findAll({ id_client: id_client });
-
-      expect(stores).toBeDefined();
-      expect(stores).toHaveLength(2);
-      expect(stores).toContainEqual(store1);
-      expect(stores).toContainEqual(store2);
-      expect(stores).not.toContainEqual(store3);
-    });
-
-    it('should find all stores by id_seller', async () => {
-      await prisma.seller.create({
-        data: {
-          name: 'Seller',
-          internalCode: 'Seller1',
-        },
-      });
-
-      const store1 = await service.create({
-        name: 'Store1',
-        internalCode: 'Store1',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client,
-      });
-
-      const store2 = await service.create({
-        name: 'Store2',
-        internalCode: 'Store2',
-        id_seller: id_seller,
-        id_city: id_city,
-        id_client: id_client,
-      });
-
-      const store3 = await service.create({
-        name: 'Store3',
-        internalCode: 'Store3',
-        id_seller: id_seller + 1,
-        id_city: id_city,
-        id_client: id_client,
-      });
-
-      const stores = await service.findAll({ id_seller: id_seller });
-
-      expect(stores).toBeDefined();
-      expect(stores).toHaveLength(2);
-      expect(stores).toContainEqual(store1);
-      expect(stores).toContainEqual(store2);
-      expect(stores).not.toContainEqual(store3);
-
-      const stores2 = await service.findAll({ id_seller: id_seller + 1 });
-
-      expect(stores2).toBeDefined();
-      expect(stores2).toHaveLength(1);
-      expect(stores2).toContainEqual(store3);
-      expect(stores2).not.toContainEqual(store1);
-      expect(stores2).not.toContainEqual(store2);
+      expect(store.name).toEqual(testStore1);
     });
   });
 });

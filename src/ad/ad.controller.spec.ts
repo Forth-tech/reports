@@ -19,5 +19,6 @@ describe('AdController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(prisma).toBeDefined();
   });
 });

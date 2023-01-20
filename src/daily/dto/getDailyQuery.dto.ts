@@ -1,14 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Network } from '@prisma/client';
-import {
-  IsDate,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class GetDailyQueryDto {
   @ApiProperty({

@@ -1,14 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Network } from '@prisma/client';
-import {
-  IsDate,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-} from 'class-validator';
+import { IsNumber, IsOptional, IsPositive } from 'class-validator';
 
 export class PatchDailyRequestDto {
   @ApiProperty({

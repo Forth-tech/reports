@@ -33,7 +33,7 @@ import { GetSellersQueryDto } from './dto/getSellersQuery.dto';
 import { GetSellersResponseDto } from './dto/getSellersResponse.dto';
 import { PostSellerRequestDto } from './dto/postSellerRequest.dto';
 import { PostSellerResponseDto } from './dto/postSellerResponse.dto';
-import { SellerOut } from './entities/Seller.entity';
+import { SellerOut } from './entities/seller.entity';
 import { SellerService } from './seller.service';
 import {
   SalesDailyResult,

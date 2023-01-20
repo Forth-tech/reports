@@ -1,4 +1,3 @@
-// import fastifyCookie from "fastify-cookie";
 import fastifyCookie from '@fastify/cookie';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
