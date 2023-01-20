@@ -22,6 +22,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({}),
   );
+  app.enableCors();
 
   // Register cookie plugin. Allows us to use cookies in our requests.
   const cookieSecret = process.env.COOKIE_SECRET || '';

@@ -70,7 +70,7 @@ export class AuthController {
       return {
         success: true,
         message: 'Login successful',
-        data: { access_token: accessToken },
+        data: { access_token: accessToken, email: user.email, Role: user.Role, name: user.name },
       };
     }
     throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
