@@ -21,9 +21,13 @@ import { FamilyModule } from './family/family.module';
 import { SellerModule } from './seller/seller.module';
 import { SupervisorModule } from './supervisor/supervisor.module';
 import { AuditService } from './common/services/audit.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AdGroupResolver } from './ad-group/ad-group.resolver';
+import { AdGroupModule } from './ad-group/ad-group.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     DailyModule,
     AuthModule,
     UsersModule,
@@ -65,8 +69,9 @@ import { AuditService } from './common/services/audit.service';
         ],
       },
     ]),
+    AdGroupModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, AuditService],
+  providers: [AppService, PrismaService, AuditService, AdGroupResolver],
 })
 export class AppModule {}

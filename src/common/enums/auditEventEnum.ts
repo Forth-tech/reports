@@ -16,4 +16,13 @@ export enum AuditEventEnum {
   ViewPurchase = 15,
   ViewItem = 16,
   ViewSeller = 17,
+  CreateAdCampaignViaAdGroup = 18,
+  CreateAdCampaign = 19,
+  UpdateAdCampaign = 20,
+  CreateAdGroupViaAd = 21,
+  CreateAdGroup = 22,
+  UpdateAdGroup = 23,
+  CreateAdCampaignViaAd = 24,
+  CreateAd = 25,
+  UpdateAd = 26,
 }

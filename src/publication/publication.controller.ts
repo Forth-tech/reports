@@ -30,10 +30,15 @@ import { PublicationOut } from './entities/publication.entity';
 import { PublicationService } from './publication.service';
 import { GetPublicationsResponseDto } from './dto/getPublicationsResponse.dto';
 import { GetPublicationsQueryDto } from './dto/getPublicationsQuery.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { FacebookService } from 'src/common/services/facebook.service';
 
 @Controller('publication')
 export class PublicationController {
-  constructor(private readonly publicationService: PublicationService) {}
+  constructor(
+    private readonly publicationService: PublicationService,
+    private readonly facebookService: FacebookService,
+  ) {}
 
   @Post('/')
   @UseGuards(JwtAccessTokenAuthGuard)

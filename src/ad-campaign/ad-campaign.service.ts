@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { AdCampaign } from '@prisma/client';
 import { PrismaService } from '../common/services/prisma.service';
+import { CreateAdCampaign } from './dto/creatAdCampaign.dto';
 import { GetAdCampaignQueryDto } from './dto/getAdCampaignQuery.dto';
 import { PatchAdCampaignRequestDto } from './dto/patchAdCampaignRequest.dto';
-import { PostAdCampaignRequestDto } from './dto/postAdCampaignRequest.dto';
 import { AdCampaignOut } from './entities/ad-campaign.entity';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class AdCampaignService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(
-    createAdCampaignDto: PostAdCampaignRequestDto,
+    createAdCampaignDto: CreateAdCampaign,
   ): Promise<AdCampaign | null> {
     return this.prismaService.adCampaign.create({
       data: createAdCampaignDto,
@@ -43,6 +43,22 @@ export class AdCampaignService {
     return this.prismaService.adCampaign.update({
       where: { id: id },
       data: updateAdCampaignDto,
+    });
+  }
+
+  async updateFromNetworkId(
+    networkId: string,
+    updateAdCampaignDto: PatchAdCampaignRequestDto,
+  ): Promise<AdCampaign> {
+    return this.prismaService.adCampaign.update({
+      where: { networkId: networkId },
+      data: updateAdCampaignDto,
+    });
+  }
+
+  async findFromNetworkId(networkId: string): Promise<AdCampaign | null> {
+    return this.prismaService.adCampaign.findUnique({
+      where: { networkId: networkId },
     });
   }
 
