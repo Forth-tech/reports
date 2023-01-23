@@ -57,6 +57,8 @@ model Publication {
   saves           Int?
   reach           Int?
   profileAccess   Int?
+  videoViews      Int?
+  networkId       String   @unique
   date            DateTime
   Ad              Ad[]
 

@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { CreateAdGroupDto } from 'src/ad-group/dto/createAdGroup.dto';
-import { AdGroupFacebookOut } from 'src/ad-group/entities/ad-group-facebook.entity';
-import { CreateAdDto } from 'src/ad/dto/create-ad.dto';
-import { AdFacebookOut } from 'src/ad/entities/ad-facebook.entity';
+import { CreateAdGroupDto } from '../../ad-group/dto/createAdGroup.dto';
+import { AdGroupFacebookOut } from '../../ad-group/entities/ad-group-facebook.entity';
+import { CreateAdDto } from '../../ad/dto/create-ad.dto';
+import { AdFacebookOut } from '../../ad/entities/ad-facebook.entity';
+import { CreatePublicationDto } from '../../publications/dto/create-publication.dto';
+import {
+  PostMetricsOut,
+  PublicationFacebook,
+} from '../../publications/entities/publication-facebook.entity';
 import { CreateAdCampaign } from '../../ad-campaign/dto/creatAdCampaign.dto';
 import { AdCampaignFacebookOut } from '../../ad-campaign/entities/ad-campaign-facebook.entity';
+import { Format } from '@prisma/client';
 
 @Injectable()
 export class FacebookService {
@@ -25,6 +31,45 @@ export class FacebookService {
           level: level,
           fields: fields.join(','),
           filtering: filters,
+        },
+      });
+      console.log(request.status);
+      console.log(request.data);
+      return request.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getAllIgObjects<T>(url: string, fields: string[]): Promise<T> {
+    try {
+      const request = await axios({
+        url: `${this.baseUrl}/${url}`,
+        method: 'GET',
+        params: {
+          access_token: process.env.FB_ACCESS_TOKEN,
+          fields: fields.join(','),
+        },
+      });
+      console.log(request.status);
+      console.log(request.data);
+      return request.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getIgMediaMetrics(
+    publicationId: string,
+    metrics: string[],
+  ): Promise<PostMetricsOut> {
+    try {
+      const request = await axios({
+        url: `${this.baseUrl}/${publicationId}/insights`,
+        method: 'GET',
+        params: {
+          access_token: process.env.FB_ACCESS_TOKEN,
+          fields: metrics.join(','),
         },
       });
       console.log(request.status);
@@ -91,5 +136,61 @@ export class FacebookService {
     });
 
     return ad;
+  }
+
+  mapToPublication(
+    publicationFacebook: PublicationFacebook,
+    publicationMetrics: PostMetricsOut,
+    id_network: number,
+  ): CreatePublicationDto {
+    let publicationFormat;
+
+    switch (publicationFacebook.media_type) {
+      case 'CAROUSEL_ALBUM':
+        publicationFormat = Format.CARROUSSEL;
+        break;
+      case 'VIDEO':
+        publicationFormat = Format.VIDEO;
+        break;
+      case 'IMAGE':
+        publicationFormat = Format.STATIC;
+        break;
+    }
+    const publication: Partial<CreatePublicationDto> = {
+      id_network: id_network,
+      url: publicationFacebook.media_url,
+      date: new Date(publicationFacebook.timestamp),
+      networkId: publicationFacebook.id,
+      format: publicationFormat,
+      likes: publicationFacebook.likes_count,
+      comments: publicationFacebook.comments_count,
+    };
+
+    publicationMetrics.data.forEach((metric) => {
+      switch (metric.name) {
+        case 'impressions':
+          publication.impressions = Number(metric.values[0].value);
+          break;
+        case 'reach':
+          publication.reach = Number(metric.values[0].value);
+          break;
+        case 'saved':
+          publication.saves = Number(metric.values[0].value);
+          break;
+        case 'profile_visits':
+          publication.profileAccess = Number(metric.values[0].value);
+          break;
+        case 'shares':
+          publication.shares = Number(metric.values[0].value);
+        case 'follows':
+          publication.gainedFollowers = Number(metric.values[0].value);
+          break;
+        case 'video_views':
+          publication.videoViews = Number(metric.values[0].value);
+          break;
+      }
+    });
+
+    return publication as CreatePublicationDto;
   }
 }

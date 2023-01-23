@@ -21,13 +21,14 @@ import { SupervisorModule } from './supervisor/supervisor.module';
 import { AuditService } from './common/services/audit.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AdGroupModule } from './ad-group/ad-group.module';
+import { DailyResultsModule } from './daily-results/daily-results.module';
+import { PublicationsModule } from './publications/publications.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     AdModule,
     AdCampaignModule,
-    AdGroupModule,
     AuthModule,
     UsersModule,
     NetworkModule,
@@ -43,6 +44,14 @@ import { AdGroupModule } from './ad-group/ad-group.module';
     FamilyModule,
     SellerModule,
     SupervisorModule,
+    AdGroupModule,
+    DailyResultsModule,
+    RouterModule.register([
+      {
+        path: 'marketing',
+        children: [{ path: 'daily-results', module: DailyResultsModule }],
+      },
+    ]),
     RouterModule.register([
       {
         path: 'ad',
@@ -70,7 +79,7 @@ import { AdGroupModule } from './ad-group/ad-group.module';
         ],
       },
     ]),
-    AdGroupModule,
+    PublicationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, AuditService],

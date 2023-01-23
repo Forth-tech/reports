@@ -25,4 +25,6 @@ export enum AuditEventEnum {
   CreateAdCampaignViaAd = 24,
   CreateAd = 25,
   UpdateAd = 26,
+  CreatePublication = 27,
+  UpdatePublication = 28,
 }
