@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AdCampaign } from '@prisma/client';
 import { AuditEventEnum } from 'src/common/enums/auditEventEnum';
@@ -20,8 +20,9 @@ export class AdCampaignController {
     private readonly auditService: AuditService,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_4AM)
+  @Cron(CronExpression.EVERY_DAY_AT_3AM)
   async updateAdCampaigns() {
+    console.log('Testing Cron Job AdCampaign');
     const facebookAdCampaign: AdCampaignFacebookRequestOut =
       await this.facebookService.getAllObjects<AdCampaignFacebookRequestOut>(
         'campaign',
@@ -44,17 +45,17 @@ export class AdCampaignController {
             );
 
           this.auditService.createAuditLog(
-            0,
+            1,
             AuditEventEnum.UpdateAdCampaign,
             updatedCampaign.id,
-            JSON.stringify(updatedCampaign),
+            '',
           );
         } else {
           this.auditService.createAuditLog(
-            0,
+            1,
             AuditEventEnum.CreateAdCampaign,
             createdCampaign.id,
-            JSON.stringify(createdCampaign),
+            '',
           );
         }
       },

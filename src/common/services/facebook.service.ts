@@ -16,18 +16,23 @@ export class FacebookService {
     fields: string[],
     filters?: object[],
   ): Promise<T> {
-    const request = await axios({
-      url: `${this.baseUrl}/${process.env.FB_ADD_ACCOUNT_ID}/insights`,
-      method: 'GET',
-      params: {
-        access_token: process.env.FB_ACCESS_TOKEN,
-        level: level,
-        fields: fields.join(','),
-        filtering: filters,
-      },
-    });
-
-    return request.data;
+    try {
+      const request = await axios({
+        url: `${this.baseUrl}/${process.env.FB_ADD_ACCOUNT_ID}/insights`,
+        method: 'GET',
+        params: {
+          access_token: process.env.FB_ACCESS_TOKEN,
+          level: level,
+          fields: fields.join(','),
+          filtering: filters,
+        },
+      });
+      console.log(request.status);
+      console.log(request.data);
+      return request.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   mapToAdCampaign(adCampaignFacebook: AdCampaignFacebookOut): CreateAdCampaign {
@@ -49,7 +54,6 @@ export class FacebookService {
     const adGroup: CreateAdGroupDto = {
       networkId: adGroupFacebook.adset_id,
       networkName: adGroupFacebook.adset_name,
-      networkGoal: adGroupFacebook.objective,
       startDate: new Date(adGroupFacebook.date_start),
       endDate: new Date(adGroupFacebook.date_stop),
       goal: adGroupFacebook.objective,
@@ -67,7 +71,7 @@ export class FacebookService {
       clicks: Number(adFacebook.clicks),
       reach: Number(adFacebook.reach),
       impressions: Number(adFacebook.impressions),
-      spend: Number(adFacebook.spend.replace('.', '')),
+      investedValue: Number(adFacebook.spend.replace('.', '')),
       startDate: new Date(adFacebook.date_start),
       endDate: new Date(adFacebook.date_stop),
     };

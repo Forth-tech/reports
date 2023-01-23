@@ -79,17 +79,17 @@ export class AdController {
         );
 
         this.auditService.createAuditLog(
-          0,
+          1,
           AuditEventEnum.UpdateAd,
           updatedAd.id,
-          JSON.stringify(updatedAd),
+          '',
         );
       } else {
         this.auditService.createAuditLog(
-          0,
+          1,
           AuditEventEnum.CreateAd,
           createdAd.id,
-          JSON.stringify(createdAd),
+          '',
         );
       }
     });
@@ -98,8 +98,8 @@ export class AdController {
   async createAdGroupFromNetworkId(networkId: string): Promise<AdGroup> {
     const facebookAdGroup: AdGroupFacebook =
       await this.facebookService.getAllObjects<AdGroupFacebook>(
-        'adgroup',
-        ['adgroup_id', 'adgroup_name', 'campaign_id', 'objective'],
+        'adset',
+        ['adset_id', 'adset_name', 'campaign_id', 'objective'],
         [{ field: 'adset_id', value: networkId }],
       );
 
@@ -121,10 +121,10 @@ export class AdController {
     const adGroup: AdGroup = await this.adGroupService.create(adGroupDto);
 
     this.auditService.createAuditLog(
-      0,
+      1,
       AuditEventEnum.CreateAdGroupViaAd,
       adGroup.id,
-      JSON.stringify(adGroup),
+      '',
     );
 
     return adGroup;
@@ -146,10 +146,10 @@ export class AdController {
     );
 
     this.auditService.createAuditLog(
-      0,
+      1,
       AuditEventEnum.CreateAdCampaignViaAd,
       adCampaign.id,
-      JSON.stringify(adCampaign),
+      '',
     );
 
     return adCampaign;

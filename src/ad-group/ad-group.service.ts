@@ -9,6 +9,12 @@ export class AdGroupService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createAdGroupDto: CreateAdGroupDto): Promise<AdGroup | null> {
+    const adGroup: AdGroup | null = await this.findFromNetworkId(
+      createAdGroupDto.networkId,
+    );
+    if (adGroup) {
+      return null;
+    }
     return this.prismaService.adGroup.create({
       data: createAdGroupDto,
     });

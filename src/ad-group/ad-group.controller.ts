@@ -15,7 +15,7 @@ import {
   AdGroupFacebookOut,
 } from './entities/ad-group-facebook.entity';
 
-@Controller('ad-group')
+@Controller('')
 export class AdGroupController {
   constructor(
     private readonly adGroupService: AdGroupService,
@@ -24,10 +24,10 @@ export class AdGroupController {
     private readonly auditService: AuditService,
   ) {}
 
-  @Post()
-  create(@Body() createAdGroupDto: CreateAdGroupDto) {
-    return this.adGroupService.create(createAdGroupDto);
-  }
+  // @Post()
+  // create(@Body() createAdGroupDto: CreateAdGroupDto) {
+  //   return this.adGroupService.create(createAdGroupDto);
+  // }
 
   @Get()
   findAll() {
@@ -44,11 +44,11 @@ export class AdGroupController {
     return this.adGroupService.update(+id, updateAdGroupDto);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_5AM)
+  @Cron(CronExpression.EVERY_DAY_AT_4AM)
   async updateAdGroups() {
     const adGroups = await this.facebookService.getAllObjects<AdGroupFacebook>(
-      'adgroup',
-      ['adgroup_id', 'adgroup_name', 'campaign_id', 'objective'],
+      'adset',
+      ['adset_id', 'adset_name', 'campaign_id', 'objective'],
     );
 
     adGroups.data.forEach(async (adGroup: AdGroupFacebookOut) => {
@@ -77,17 +77,17 @@ export class AdGroupController {
           );
 
         this.auditService.createAuditLog(
-          0,
+          1,
           AuditEventEnum.UpdateAdGroup,
           updatedAdGroup.id,
-          JSON.stringify(updatedAdGroup),
+          '',
         );
       } else {
         this.auditService.createAuditLog(
-          0,
+          1,
           AuditEventEnum.CreateAdGroup,
           createdAdGroup.id,
-          JSON.stringify(createdAdGroup),
+          '',
         );
       }
     });
@@ -107,10 +107,10 @@ export class AdGroupController {
     const adCampaign = await this.adCampaignService.create(adCampaignDto);
 
     this.auditService.createAuditLog(
-      0,
+      1,
       AuditEventEnum.CreateAdCampaignViaAdGroup,
       adCampaign.id,
-      JSON.stringify(adCampaign),
+      '',
     );
 
     return adCampaign;

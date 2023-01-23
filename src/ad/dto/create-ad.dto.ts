@@ -7,7 +7,7 @@ export class CreateAdDto {
   clicks: number;
   reach: number;
   impressions: number;
-  spend: number;
+  investedValue: number;
   likes?: number;
   shares?: number;
   saves?: number;

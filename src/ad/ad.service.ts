@@ -9,11 +9,19 @@ export class AdService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createAdDto: CreateAdDto): Promise<Ad | null> {
-    const ad: Ad = await this.prismaService.ad.create({
+    const ad: Ad | null = await this.findFromNetworkId(createAdDto.networkId);
+    if (ad) {
+      return null;
+    }
+    return await this.prismaService.ad.create({
       data: createAdDto,
     });
+  }
 
-    return ad;
+  async findFromNetworkId(networkId: string): Promise<Ad | null> {
+    return this.prismaService.ad.findUnique({
+      where: { networkId },
+    });
   }
 
   findAll() {

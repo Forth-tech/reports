@@ -13,6 +13,12 @@ export class AdCampaignService {
   async create(
     createAdCampaignDto: CreateAdCampaign,
   ): Promise<AdCampaign | null> {
+    const campaign: AdCampaign | null = await this.findFromNetworkId(
+      createAdCampaignDto.networkId,
+    );
+    if (campaign) {
+      return null;
+    }
     return this.prismaService.adCampaign.create({
       data: createAdCampaignDto,
     });

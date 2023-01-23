@@ -3,8 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './common/services/prisma.service';
-import { DailyModule } from './daily/daily.module';
-import { PublicationModule } from './publication/publication.module';
 import { UsersModule } from './users/users.module';
 import { NetworkModule } from './network/network.module';
 import { AdModule } from './ad/ad.module';
@@ -22,16 +20,16 @@ import { SellerModule } from './seller/seller.module';
 import { SupervisorModule } from './supervisor/supervisor.module';
 import { AuditService } from './common/services/audit.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AdGroupResolver } from './ad-group/ad-group.resolver';
 import { AdGroupModule } from './ad-group/ad-group.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    DailyModule,
+    AdModule,
+    AdCampaignModule,
+    AdGroupModule,
     AuthModule,
     UsersModule,
-    PublicationModule,
     NetworkModule,
     AdModule,
     AdCampaignModule,
@@ -49,7 +47,10 @@ import { AdGroupModule } from './ad-group/ad-group.module';
       {
         path: 'ad',
         module: AdModule,
-        children: [{ path: 'campaign', module: AdCampaignModule }],
+        children: [
+          { path: 'campaign', module: AdCampaignModule },
+          { path: 'group', module: AdGroupModule },
+        ],
       },
     ]),
     RouterModule.register([
@@ -72,6 +73,6 @@ import { AdGroupModule } from './ad-group/ad-group.module';
     AdGroupModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, AuditService, AdGroupResolver],
+  providers: [AppService, PrismaService, AuditService],
 })
 export class AppModule {}
