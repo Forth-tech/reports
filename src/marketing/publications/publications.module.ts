@@ -7,6 +7,11 @@ import { FacebookService } from '../../common/services/facebook.service';
 
 @Module({
   controllers: [PublicationsController],
-  providers: [PublicationsService, PrismaService, AuditService, FacebookService],
+  providers: [
+    PublicationsService,
+    PrismaService,
+    AuditService,
+    FacebookService,
+  ],
 })
 export class PublicationsModule {}

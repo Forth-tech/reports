@@ -20,6 +20,8 @@ export class FacebookService {
   async getAllObjects<T>(
     level: string,
     fields: string[],
+    since?: number,
+    next?: string,
     filters?: object[],
   ): Promise<T> {
     try {
@@ -31,6 +33,8 @@ export class FacebookService {
           level: level,
           fields: fields.join(','),
           filtering: filters,
+          since: since ? since : null,
+          next: next ? next : null,
         },
       });
       return request.data;

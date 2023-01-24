@@ -22,19 +22,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Store } from '@prisma/client';
-<<<<<<< HEAD:src/bi/store/store.controller.ts
 import { AuditEventEnum } from '../../common/enums/auditEventEnum';
 import { FastifyRequestWithUser } from '../../common/interfaces/customFastifyRequest';
 import { AuditService } from '../../common/services/audit.service';
 import { JwtAccessTokenAuthGuard } from '../../auth/jwt-access-token.guard';
 import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
-=======
-import { AuditEventEnum } from '../common/enums/auditEventEnum';
-import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
-import { AuditService } from '../common/services/audit.service';
-import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
-import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
->>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/store/store.controller.ts
 import { GetStoreResponseDto } from './dto/getStoreResponse.dto';
 import { GetStoresQueryDto } from './dto/getStoresQuery.dto';
 import { GetStoresResponseDto } from './dto/getStoresResponse.dto';
@@ -44,11 +36,7 @@ import { PostStoreRequestDto } from './dto/postStoreRequest.dto';
 import { PostStoreResponseDto } from './dto/postStoreResponse.dto';
 import { StoreOut } from './entities/store.entity';
 import { StoreService } from './store.service';
-<<<<<<< HEAD:src/bi/store/store.controller.ts
 import { grantPermission } from '../../utils/grantPermission.guard';
-=======
-import { grantPermission } from '../utils/grantPermission.guard';
->>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/store/store.controller.ts
 
 @Controller('')
 export class StoreController {

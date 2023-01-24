@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Roles, Store, User } from '@prisma/client';
-<<<<<<< HEAD:src/bi/store/store.service.ts
 import { PrismaService } from '../../common/services/prisma.service';
-=======
-import { PrismaService } from '../common/services/prisma.service';
->>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/store/store.service.ts
 import { GetStoresQueryDto } from './dto/getStoresQuery.dto';
 import { PatchStoreRequestDto } from './dto/patchStoreRequest.dto';
 import { PostStoreRequestDto } from './dto/postStoreRequest.dto';

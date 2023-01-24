@@ -20,10 +20,10 @@ export class PublicationsController {
     private readonly auditService: AuditService,
   ) {}
 
-  // @Post()
-  // create(@Body() createPublicationDto: CreatePublicationDto) {
-  //   return this.publicationsService.create(createPublicationDto);
-  // }
+  @Post()
+  create(@Body() createPublicationDto: CreatePublicationDto) {
+    return this.publicationsService.create(createPublicationDto);
+  }
 
   @Get()
   findAll() {
@@ -40,9 +40,8 @@ export class PublicationsController {
     return this.publicationsService.remove(+id);
   }
 
-  // @Cron(CronExpression.EVERY_DAY_AT_2AM)
-  @Post()
-  async updateIgPublications() {
+  @Cron(CronExpression.EVERY_DAY_AT_2AM)
+  async updateIgPublications(): Promise<void> {
     const sinceFilter = Math.floor(
       (Date.now() - 1000 * 60 * 60 * 24 * 30) / 1000,
     );
@@ -73,14 +72,21 @@ export class PublicationsController {
     }
   }
 
-  async handlePublicationCreation(publication: PublicationFacebook) {
+  async handlePublicationCreation(
+    publication: PublicationFacebook,
+  ): Promise<void> {
     let metrics: string[] = ['saved', 'reach'];
     switch (publication.media_type) {
       case 'CAROUSEL_ALBUM':
         metrics = metrics.concat(['impressions']);
         break;
       case 'IMAGE':
-        metrics = metrics.concat(['profile_visits', 'shares', 'follows', 'impressions']);
+        metrics = metrics.concat([
+          'profile_visits',
+          'shares',
+          'follows',
+          'impressions',
+        ]);
         break;
       case 'VIDEO':
         metrics = metrics.concat(['comments', 'shares']);

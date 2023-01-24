@@ -46,58 +46,90 @@ export class AdGroupController {
 
   @Cron(CronExpression.EVERY_DAY_AT_4AM)
   async updateAdGroups() {
+    const sinceFilter = Math.floor(
+      (Date.now() - 1000 * 60 * 60 * 24 * 30) / 1000,
+    );
+
     const adGroups = await this.facebookService.getAllObjects<AdGroupFacebook>(
       'adset',
       ['adset_id', 'adset_name', 'campaign_id', 'objective'],
+      sinceFilter,
     );
 
     adGroups.data.forEach(async (adGroup: AdGroupFacebookOut) => {
-      let adCampaign: AdCampaign | null =
-        await this.adCampaignService.findFromNetworkId(adGroup.campaign_id);
-
-      if (!adCampaign) {
-        adCampaign = await this.createAdCampaignFromNetworkId(
-          adGroup.campaign_id,
-        );
-      }
-
-      const adGroupDto: CreateAdGroupDto = this.facebookService.mapToAdGroup(
-        adGroup,
-        adCampaign.id,
-      );
-      const createdAdGroup: AdGroup | null = await this.adGroupService.create(
-        adGroupDto,
-      );
-
-      if (!createdAdGroup) {
-        const updatedAdGroup: AdGroup =
-          await this.adGroupService.updateFromNetworkId(
-            adGroupDto.networkId,
-            adGroupDto,
-          );
-
-        this.auditService.createAuditLog(
-          1,
-          AuditEventEnum.UpdateAdGroup,
-          updatedAdGroup.id,
-          '',
-        );
-      } else {
-        this.auditService.createAuditLog(
-          1,
-          AuditEventEnum.CreateAdGroup,
-          createdAdGroup.id,
-          '',
-        );
-      }
+      await this.createAdGroup(adGroup, sinceFilter);
     });
+
+    while (adGroups.paging.next) {
+      const nextAdGroups =
+        await this.facebookService.getAllObjects<AdGroupFacebook>(
+          'adset',
+          ['adset_id', 'adset_name', 'campaign_id', 'objective'],
+          sinceFilter,
+          adGroups.paging.cursors.after,
+        );
+
+      nextAdGroups.data.forEach(async (adGroup: AdGroupFacebookOut) => {
+        await this.createAdGroup(adGroup, sinceFilter);
+      });
+    }
   }
 
-  async createAdCampaignFromNetworkId(networkId: string): Promise<AdCampaign> {
+  async createAdGroup(
+    adGroup: AdGroupFacebookOut,
+    sinceFilter: number,
+  ): Promise<void> {
+    let adCampaign: AdCampaign | null =
+      await this.adCampaignService.findFromNetworkId(adGroup.campaign_id);
+
+    if (!adCampaign) {
+      adCampaign = await this.createAdCampaignFromNetworkId(
+        adGroup.campaign_id,
+        sinceFilter,
+      );
+    }
+
+    const adGroupDto: CreateAdGroupDto = this.facebookService.mapToAdGroup(
+      adGroup,
+      adCampaign.id,
+    );
+    const createdAdGroup: AdGroup | null = await this.adGroupService.create(
+      adGroupDto,
+    );
+
+    if (!createdAdGroup) {
+      const updatedAdGroup: AdGroup =
+        await this.adGroupService.updateFromNetworkId(
+          adGroupDto.networkId,
+          adGroupDto,
+        );
+
+      this.auditService.createAuditLog(
+        1,
+        AuditEventEnum.UpdateAdGroup,
+        updatedAdGroup.id,
+        '',
+      );
+    } else {
+      this.auditService.createAuditLog(
+        1,
+        AuditEventEnum.CreateAdGroup,
+        createdAdGroup.id,
+        '',
+      );
+    }
+  }
+
+  async createAdCampaignFromNetworkId(
+    networkId: string,
+    sinceFilter: number,
+  ): Promise<AdCampaign> {
     const facebookAdCampaign: AdCampaignFacebookRequestOut =
       await this.facebookService.getAllObjects<AdCampaignFacebookRequestOut>(
         'campaign',
         ['campaign_id', 'campaign_name', 'objective'],
+        sinceFilter,
+        null,
         [{ field: 'campaign_id', value: networkId }],
       );
 

@@ -9,4 +9,12 @@ export type AdGroupFacebookOut = {
 
 export class AdGroupFacebook {
   data: AdGroupFacebookOut[];
+  paging: {
+    cursors: {
+      before: string;
+      after: string;
+    };
+    next?: string;
+    before?: string;
+  };
 }

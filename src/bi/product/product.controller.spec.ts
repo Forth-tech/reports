@@ -1,11 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-<<<<<<< HEAD:src/bi/product/product.controller.spec.ts
 import { AuditService } from '../../common/services/audit.service';
 import { PrismaService } from '../../common/services/prisma.service';
-=======
-import { AuditService } from '../common/services/audit.service';
-import { PrismaService } from '../common/services/prisma.service';
->>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/product/product.controller.spec.ts
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 

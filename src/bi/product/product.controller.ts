@@ -23,19 +23,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Product } from '@prisma/client';
-<<<<<<< HEAD:src/bi/product/product.controller.ts
 import { AuditEventEnum } from '../../common/enums/auditEventEnum';
 import { FastifyRequestWithUser } from '../../common/interfaces/customFastifyRequest';
 import { AuditService } from '../../common/services/audit.service';
 import { JwtAccessTokenAuthGuard } from '../../auth/jwt-access-token.guard';
 import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
-=======
-import { AuditEventEnum } from '../common/enums/auditEventEnum';
-import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
-import { AuditService } from '../common/services/audit.service';
-import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
-import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
->>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/product/product.controller.ts
 import { GetProductResponseDto } from './dto/getProductResponse.dto';
 import { GetProductsQueryDto } from './dto/getProductsQuery.dto';
 import { GetProductsResponseDto } from './dto/getProductsResponse.dto';

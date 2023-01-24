@@ -22,15 +22,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Item } from '@prisma/client';
-<<<<<<< HEAD:src/bi/item/item.controller.ts
 import { AuditService } from '../../common/services/audit.service';
 import { JwtAccessTokenAuthGuard } from '../../auth/jwt-access-token.guard';
 import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
-=======
-import { AuditService } from '../common/services/audit.service';
-import { JwtAccessTokenAuthGuard } from '../auth/jwt-access-token.guard';
-import { DefaultResponseDto } from '../common/dto/defaultResponse.dto';
->>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/item/item.controller.ts
 import { GetItemsQueryDto } from './dto/getItemQuery.dto';
 import { GetItemResponseDto } from './dto/getItemResponse.dto';
 import { GetItemsResponseDto } from './dto/getItemsResponse.dto';
@@ -38,13 +32,8 @@ import { PostItemRequestDto } from './dto/postItemRequest.dto';
 import { PostItemResponseDto } from './dto/postItemResponse.dto';
 import { ItemOut } from './entities/item.entity';
 import { ItemService } from './item.service';
-<<<<<<< HEAD:src/bi/item/item.controller.ts
 import { FastifyRequestWithUser } from '../../common/interfaces/customFastifyRequest';
 import { AuditEventEnum } from '../../common/enums/auditEventEnum';
-=======
-import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
-import { AuditEventEnum } from '../common/enums/auditEventEnum';
->>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/item/item.controller.ts
 
 @Controller('')
 export class ItemController {

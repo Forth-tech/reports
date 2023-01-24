@@ -18,4 +18,12 @@ export type AdFacebookOut = {
 
 export class AdFacebookRequestOut {
   data: AdFacebookOut[];
+  paging: {
+    cursors: {
+      before: string;
+      after: string;
+    };
+    next?: string;
+    before?: string;
+  };
 }

@@ -48,51 +48,85 @@ export class AdController {
 
   @Cron(CronExpression.EVERY_DAY_AT_5AM)
   async updateAds() {
-    const allAds =
-      await this.facebookService.getAllObjects<AdFacebookRequestOut>('ad', [
-        'ad_id',
-        'adset_id',
-        'clicks',
-        'impressions',
-        'reach',
-        'spend',
-        'actions',
-      ]);
+    const sinceFilter = Math.floor(
+      (Date.now() - 1000 * 60 * 60 * 24 * 30) / 1000,
+    );
 
-    allAds.data.forEach(async (ad: AdFacebookOut) => {
-      let adGroup: AdGroup | null = await this.adGroupService.findFromNetworkId(
-        ad.adset_id,
+    const allAds =
+      await this.facebookService.getAllObjects<AdFacebookRequestOut>(
+        'ad',
+        [
+          'ad_id',
+          'adset_id',
+          'clicks',
+          'impressions',
+          'reach',
+          'spend',
+          'actions',
+        ],
+        sinceFilter,
       );
 
-      if (!adGroup) {
-        adGroup = await this.createAdGroupFromNetworkId(ad.adset_id);
-      }
-
-      const adDto: CreateAdDto = this.facebookService.mapToAd(ad, adGroup.id);
-
-      const createdAd: Ad | null = await this.adService.create(adDto);
-
-      if (!createdAd) {
-        const updatedAd: Ad = await this.adService.updateFromNetworkId(
-          adDto.networkId,
-          adDto,
-        );
-
-        this.auditService.createAuditLog(
-          1,
-          AuditEventEnum.UpdateAd,
-          updatedAd.id,
-          '',
-        );
-      } else {
-        this.auditService.createAuditLog(
-          1,
-          AuditEventEnum.CreateAd,
-          createdAd.id,
-          '',
-        );
-      }
+    allAds.data.forEach(async (ad: AdFacebookOut) => {
+      await this.createAd(ad);
     });
+
+    while (allAds.paging.next) {
+      const nextAds =
+        await this.facebookService.getAllObjects<AdFacebookRequestOut>(
+          'ad',
+          [
+            'ad_id',
+            'adset_id',
+            'clicks',
+            'impressions',
+            'reach',
+            'spend',
+            'actions',
+          ],
+          sinceFilter,
+          allAds.paging.cursors.after,
+        );
+
+      nextAds.data.forEach(async (ad: AdFacebookOut) => {
+        await this.createAd(ad);
+      });
+    }
+  }
+
+  async createAd(ad: AdFacebookOut): Promise<void> {
+    let adGroup: AdGroup | null = await this.adGroupService.findFromNetworkId(
+      ad.adset_id,
+    );
+
+    if (!adGroup) {
+      adGroup = await this.createAdGroupFromNetworkId(ad.adset_id);
+    }
+
+    const adDto: CreateAdDto = this.facebookService.mapToAd(ad, adGroup.id);
+
+    const createdAd: Ad | null = await this.adService.create(adDto);
+
+    if (!createdAd) {
+      const updatedAd: Ad = await this.adService.updateFromNetworkId(
+        adDto.networkId,
+        adDto,
+      );
+
+      this.auditService.createAuditLog(
+        1,
+        AuditEventEnum.UpdateAd,
+        updatedAd.id,
+        '',
+      );
+    } else {
+      this.auditService.createAuditLog(
+        1,
+        AuditEventEnum.CreateAd,
+        createdAd.id,
+        '',
+      );
+    }
   }
 
   async createAdGroupFromNetworkId(networkId: string): Promise<AdGroup> {
@@ -100,6 +134,8 @@ export class AdController {
       await this.facebookService.getAllObjects<AdGroupFacebook>(
         'adset',
         ['adset_id', 'adset_name', 'campaign_id', 'objective'],
+        null,
+        null,
         [{ field: 'adset_id', value: networkId }],
       );
 
@@ -135,6 +171,8 @@ export class AdController {
       await this.facebookService.getAllObjects<AdCampaignFacebookRequestOut>(
         'campaign',
         ['campaign_id', 'campaign_name', 'objective'],
+        null,
+        null,
         [{ field: 'campaign_id', value: networkId }],
       );
 

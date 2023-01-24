@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Purchase, Roles, User } from '@prisma/client';
-<<<<<<< HEAD:src/bi/purchase/purchase.service.ts
 import { PrismaService } from '../../common/services/prisma.service';
-=======
-import { PrismaService } from '../common/services/prisma.service';
->>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/purchase/purchase.service.ts
 import { GetPurchasesQueryDto } from './dto/getPurchasesQuery.dto';
 import { PostPurchaseRequestDto } from './dto/postPurchaseRequest.dto';
 import { PurchaseOut } from './entities/purchase.entity';
