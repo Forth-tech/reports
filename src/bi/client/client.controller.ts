@@ -29,12 +29,21 @@ import { Client } from '@prisma/client';
 import { ClientOut } from './entities/client.entity';
 import { GetClientResponseDto } from './dto/getClientResponse.dto';
 import { GetClientsResponseDto } from './dto/getClientsResponse.dto';
+<<<<<<< HEAD:src/bi/client/client.controller.ts
 import { AuditService } from '../../common/services/audit.service';
 import { FastifyRequestWithUser } from '../../common/interfaces/customFastifyRequest';
 import { AuditEventEnum } from '../../common/enums/auditEventEnum';
 import { RfmClassification } from '../../common/entities/rfmClassification.entity';
 import { GetRfmClassificationResponseDto } from '../../common/dto/getRfmClassificationResponse.dto';
 import { grantPermission } from '../../utils/grantPermission.guard';
+=======
+import { AuditService } from '../common/services/audit.service';
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { AuditEventEnum } from '../common/enums/auditEventEnum';
+import { RfmClassification } from '../common/entities/rfmClassification.entity';
+import { GetRfmClassificationResponseDto } from '../common/dto/getRfmClassificationResponse.dto';
+import { grantPermission } from '../utils/grantPermission.guard';
+>>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/client/client.controller.ts
 
 @Controller('')
 export class ClientController {

@@ -1,4 +1,3 @@
-// import fastifyCookie from "fastify-cookie";
 import fastifyCookie from '@fastify/cookie';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -22,6 +21,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({}),
   );
+  app.enableCors();
 
   // Register cookie plugin. Allows us to use cookies in our requests.
   const cookieSecret = process.env.COOKIE_SECRET || '';

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Roles } from '@prisma/client';
 import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
 
 export class UserLoginResponseDto extends DefaultResponseDto {
@@ -16,5 +17,8 @@ export class UserLoginResponseDto extends DefaultResponseDto {
   })
   data: {
     access_token: string;
+    email?: string;
+    Role?: Roles;
+    name?: string;
   };
 }

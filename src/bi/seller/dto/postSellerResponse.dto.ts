@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+<<<<<<< HEAD:src/bi/seller/dto/postSellerResponse.dto.ts
 import { DefaultResponseDto } from '../../../common/dto/defaultResponse.dto';
+=======
+import { DefaultResponseDto } from '../../common/dto/defaultResponse.dto';
+>>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/seller/dto/postSellerResponse.dto.ts
 import { SellerOut } from '../entities/seller.entity';
 
 export class PostSellerResponseDto extends DefaultResponseDto {

@@ -32,10 +32,17 @@ import { PurchaseOut } from './entities/purchase.entity';
 import { GetPurchasesQueryDto } from './dto/getPurchasesQuery.dto';
 import { GetPurchasesResponseDto } from './dto/getPurchasesResponse.dto';
 import { GetPurchaseResponseDto } from './dto/getPurchaseResponse.dto';
+<<<<<<< HEAD:src/bi/purchase/purchase.controller.ts
 import { FastifyRequestWithUser } from '../../common/interfaces/customFastifyRequest';
 import { AuditService } from '../../common/services/audit.service';
 import { AuditEventEnum } from '../../common/enums/auditEventEnum';
 import { grantPermission } from '../../utils/grantPermission.guard';
+=======
+import { FastifyRequestWithUser } from '../common/interfaces/customFastifyRequest';
+import { AuditService } from '../common/services/audit.service';
+import { AuditEventEnum } from '../common/enums/auditEventEnum';
+import { grantPermission } from '../utils/grantPermission.guard';
+>>>>>>> 74410369a109b3cf092846165d58cbec9e4bcd27:src/purchase/purchase.controller.ts
 
 @Controller('')
 export class PurchaseController {
