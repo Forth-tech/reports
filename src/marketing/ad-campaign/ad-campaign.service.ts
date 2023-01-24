@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { AdCampaign } from '@prisma/client';
+<<<<<<< HEAD:src/marketing/ad-campaign/ad-campaign.service.ts
 import { PrismaService } from '../../common/services/prisma.service';
+=======
+import { PrismaService } from '../common/services/prisma.service';
+>>>>>>> 2fd0afe7145d8fe17dbc013ab8759ee729eaca15:src/ad-campaign/ad-campaign.service.ts
 import { CreateAdCampaign } from './dto/creatAdCampaign.dto';
 import { GetAdCampaignQueryDto } from './dto/getAdCampaignQuery.dto';
 import { PatchAdCampaignRequestDto } from './dto/patchAdCampaignRequest.dto';

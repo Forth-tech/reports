@@ -3,8 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './common/services/prisma.service';
-import { DailyModule } from './daily/daily.module';
-import { PublicationModule } from './publication/publication.module';
 import { UsersModule } from './users/users.module';
 import { NetworkModule } from './marketing/network/network.module';
 import { AdModule } from './marketing/ad/ad.module';
@@ -28,10 +26,11 @@ import { PublicationsModule } from './marketing/publications/publications.module
 
 @Module({
   imports: [
-    DailyModule,
+    ScheduleModule.forRoot(),
+    AdModule,
+    AdCampaignModule,
     AuthModule,
     UsersModule,
-    PublicationModule,
     NetworkModule,
     AdModule,
     AdCampaignModule,
@@ -45,11 +44,26 @@ import { PublicationsModule } from './marketing/publications/publications.module
     FamilyModule,
     SellerModule,
     SupervisorModule,
+    AdGroupModule,
+    DailyResultsModule,
+    PublicationsModule,
+    RouterModule.register([
+      {
+        path: 'marketing',
+        children: [
+          { path: 'daily-results', module: DailyResultsModule },
+          { path: 'publications', module: PublicationsModule },
+        ],
+      },
+    ]),
     RouterModule.register([
       {
         path: 'ad',
         module: AdModule,
-        children: [{ path: 'campaign', module: AdCampaignModule }],
+        children: [
+          { path: 'campaign', module: AdCampaignModule },
+          { path: 'group', module: AdGroupModule },
+        ],
       },
     ]),
     RouterModule.register([
