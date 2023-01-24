@@ -43,9 +43,10 @@ model Publication {
   id              Int      @id @default(autoincrement())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  name            String
-  network         Network
-  url             String
+  name            String?
+  id_network      Int
+  network         Networks @relation(fields: [id_network], references: [id])
+  url             String   @db.VarChar(512)
   content         String?
   format          Format
   gainedFollowers Int?
@@ -56,12 +57,18 @@ model Publication {
   saves           Int?
   reach           Int?
   profileAccess   Int?
+  videoViews      Int?
+  networkId       String   @unique
   date            DateTime
+  Ad              Ad[]
+
+  @@map("TB_Publication")
 }
 
-model Daily {
+model DailyResults {
   id              Int      @id @default(autoincrement())
-  network         Network
+  id_network      Int
+  network         Networks @relation(fields: [id_network], references: [id])
   date            DateTime
   updatedAt       DateTime @updatedAt
   gainedFollowers Int?
@@ -71,28 +78,92 @@ model Daily {
   impressions     Int?
   engagement      Int?
   reach           Int?
+
+  @@unique([id_network, date])
+  @@map("TB_DailyResults")
 }
 
 model Networks {
-  id      Int     @id @default(autoincrement())
-  network Network
-  url     String
-  name    String
+  id           Int            @id @default(autoincrement())
+  network      Network
+  url          String
+  name         String
+  DailyResults DailyResults[]
+  Publication  Publication[]
 
   @@unique([network, name])
+  @@map("TB_Networks")
 }
 
 model AdCampaign {
   id          Int       @id @default(autoincrement())
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  name        String
-  goal        String
-  networkName String?   @unique
-  networkId   String?
+  name        String?
+  goal        String?
+  networkName String
+  networkId   String    @unique
   networkGoal String?
   startDate   DateTime
   endDate     DateTime?
+  AdGroup     AdGroup[]
+
+  @@map("TB_AdCampaign")
+}
+
+model AdGroup {
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  name        String?
+  goal        String?
+  networkName String
+  networkId   String     @unique
+  startDate   DateTime
+  endDate     DateTime?
+  results     Int?
+  id_campaign Int
+  AdCampaign  AdCampaign @relation(fields: [id_campaign], references: [id])
+  Ad          Ad[]
+  audienceId  Int?
+  Audience    Audience?  @relation(fields: [audienceId], references: [id])
+
+  @@map("TB_AdGroup")
+}
+
+model Ad {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  networkId      String       @unique
+  startDate      DateTime
+  endDate        DateTime?
+  id_adGroup     Int
+  AdGroup        AdGroup      @relation(fields: [id_adGroup], references: [id])
+  clicks         Int?
+  impressions    Int?
+  likes          Int?
+  shares         Int?
+  saves          Int?
+  reach          Int?
+  startFollowers Int?
+  endFollowers   Int?
+  investedValue  Int?
+  id_publication Int?
+  Publication    Publication? @relation(fields: [id_publication], references: [id])
+
+  @@map("TB_Ad")
+}
+
+model Audience {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  networkId String    @unique
+  name      String
+  AdGroup   AdGroup[]
+
+  @@map("TB_Audience")
 }
 
 enum Network {
@@ -201,6 +272,7 @@ model Item {
   Product     Product  @relation(fields: [id_product], references: [id])
 
   @@map("TB_PurchaseItem")
+  @@unique([id_purchase, id_product])
 }
 
 model Product {

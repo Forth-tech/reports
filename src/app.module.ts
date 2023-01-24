@@ -3,31 +3,34 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './common/services/prisma.service';
-import { DailyModule } from './daily/daily.module';
-import { PublicationModule } from './publication/publication.module';
 import { UsersModule } from './users/users.module';
-import { NetworkModule } from './network/network.module';
-import { AdModule } from './ad/ad.module';
-import { AdCampaignModule } from './ad-campaign/ad-campaign.module';
+import { NetworkModule } from './marketing/network/network.module';
+import { AdModule } from './marketing/ad/ad.module';
+import { AdCampaignModule } from './marketing/ad-campaign/ad-campaign.module';
 import { RouterModule } from '@nestjs/core';
-import { CityModule } from './city/city.module';
-import { StateModule } from './state/state.module';
-import { ClientModule } from './client/client.module';
-import { StoreModule } from './store/store.module';
-import { PurchaseModule } from './purchase/purchase.module';
-import { ItemModule } from './item/item.module';
-import { ProductModule } from './product/product.module';
-import { FamilyModule } from './family/family.module';
-import { SellerModule } from './seller/seller.module';
-import { SupervisorModule } from './supervisor/supervisor.module';
+import { CityModule } from './bi/city/city.module';
+import { StateModule } from './bi/state/state.module';
+import { ClientModule } from './bi/client/client.module';
+import { StoreModule } from './bi/store/store.module';
+import { PurchaseModule } from './bi/purchase/purchase.module';
+import { ItemModule } from './bi/item/item.module';
+import { ProductModule } from './bi/product/product.module';
+import { FamilyModule } from './bi/family/family.module';
+import { SellerModule } from './bi/seller/seller.module';
+import { SupervisorModule } from './bi/supervisor/supervisor.module';
 import { AuditService } from './common/services/audit.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AdGroupModule } from './marketing/ad-group/ad-group.module';
+import { DailyResultsModule } from './marketing/daily-results/daily-results.module';
+import { PublicationsModule } from './marketing/publications/publications.module';
 
 @Module({
   imports: [
-    DailyModule,
+    ScheduleModule.forRoot(),
+    AdModule,
+    AdCampaignModule,
     AuthModule,
     UsersModule,
-    PublicationModule,
     NetworkModule,
     AdModule,
     AdCampaignModule,
@@ -41,11 +44,26 @@ import { AuditService } from './common/services/audit.service';
     FamilyModule,
     SellerModule,
     SupervisorModule,
+    AdGroupModule,
+    DailyResultsModule,
+    PublicationsModule,
+    RouterModule.register([
+      {
+        path: 'marketing',
+        children: [
+          { path: 'daily-results', module: DailyResultsModule },
+          { path: 'publications', module: PublicationsModule },
+        ],
+      },
+    ]),
     RouterModule.register([
       {
         path: 'ad',
         module: AdModule,
-        children: [{ path: 'campaign', module: AdCampaignModule }],
+        children: [
+          { path: 'campaign', module: AdCampaignModule },
+          { path: 'group', module: AdGroupModule },
+        ],
       },
     ]),
     RouterModule.register([
