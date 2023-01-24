@@ -33,15 +33,18 @@ export class FacebookService {
           filtering: filters,
         },
       });
-      console.log(request.status);
-      console.log(request.data);
       return request.data;
     } catch (error) {
       console.log(error);
     }
   }
 
-  async getAllIgObjects<T>(url: string, fields: string[]): Promise<T> {
+  async getAllIgObjects<T>(
+    url: string,
+    fields: string[],
+    since?: number,
+    next?: string,
+  ): Promise<T> {
     try {
       const request = await axios({
         url: `${this.baseUrl}/${url}`,
@@ -49,10 +52,10 @@ export class FacebookService {
         params: {
           access_token: process.env.FB_ACCESS_TOKEN,
           fields: fields.join(','),
+          since: since ? since : null,
+          next: next ? next : null,
         },
       });
-      console.log(request.status);
-      console.log(request.data);
       return request.data;
     } catch (error) {
       console.log(error);
@@ -69,11 +72,9 @@ export class FacebookService {
         method: 'GET',
         params: {
           access_token: process.env.FB_ACCESS_TOKEN,
-          fields: metrics.join(','),
+          metric: metrics.join(','),
         },
       });
-      console.log(request.status);
-      console.log(request.data);
       return request.data;
     } catch (error) {
       console.log(error);
@@ -182,6 +183,7 @@ export class FacebookService {
           break;
         case 'shares':
           publication.shares = Number(metric.values[0].value);
+          break;
         case 'follows':
           publication.gainedFollowers = Number(metric.values[0].value);
           break;

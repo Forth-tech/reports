@@ -46,7 +46,7 @@ model Publication {
   name            String?
   id_network      Int
   network         Networks @relation(fields: [id_network], references: [id])
-  url             String
+  url             String   @db.VarChar(512)
   content         String?
   format          Format
   gainedFollowers Int?

@@ -12,7 +12,7 @@ import { Publication } from '@prisma/client';
 import { AuditService } from 'src/common/services/audit.service';
 import { AuditEventEnum } from 'src/common/enums/auditEventEnum';
 
-@Controller('publications')
+@Controller('')
 export class PublicationsController {
   constructor(
     private readonly publicationsService: PublicationsService,
@@ -20,10 +20,10 @@ export class PublicationsController {
     private readonly auditService: AuditService,
   ) {}
 
-  @Post()
-  create(@Body() createPublicationDto: CreatePublicationDto) {
-    return this.publicationsService.create(createPublicationDto);
-  }
+  // @Post()
+  // create(@Body() createPublicationDto: CreatePublicationDto) {
+  //   return this.publicationsService.create(createPublicationDto);
+  // }
 
   @Get()
   findAll() {
@@ -40,66 +40,82 @@ export class PublicationsController {
     return this.publicationsService.remove(+id);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_2AM)
+  // @Cron(CronExpression.EVERY_DAY_AT_2AM)
+  @Post()
   async updateIgPublications() {
-    const publicationsFacebook: PublicationFacebookOut =
-      await this.facebookService.getAllIgObjects('17841410886204793/media', [
-        'media_url',
-        'media_type',
-        'thumbnail_url',
-        'timestamp',
-      ]);
-
-    publicationsFacebook.data.forEach(
-      async (publication: PublicationFacebook) => {
-        let metrics: string[] = ['saved', 'reach', 'impressions'];
-        switch (publication.media_type) {
-          case 'CAROUSEL_ALBUM':
-            metrics = metrics.concat([]);
-            break;
-          case 'IMAGE':
-            metrics = metrics.concat(['profile_visits', 'shares', 'follows']);
-            break;
-          case 'VIDEO':
-            metrics = metrics.concat(['comments', 'shares', 'video_views']);
-            break;
-        }
-
-        const publicationMetrics: PostMetricsOut =
-          await this.facebookService.getIgMediaMetrics(publication.id, metrics);
-
-        const publicationDto: CreatePublicationDto =
-          this.facebookService.mapToPublication(
-            publication,
-            publicationMetrics,
-            1,
-          );
-
-        const createdPublication: Publication | null =
-          await this.publicationsService.create(publicationDto);
-
-        if (createdPublication) {
-          this.auditService.createAuditLog(
-            1,
-            AuditEventEnum.CreatePublication,
-            createdPublication.id,
-            '',
-          );
-        } else {
-          const updatedPublication: Publication | null =
-            await this.publicationsService.updateByNetworkId(
-              publicationDto.networkId,
-              publicationDto,
-            );
-
-          this.auditService.createAuditLog(
-            1,
-            AuditEventEnum.UpdatePublication,
-            updatedPublication.id,
-            '',
-          );
-        }
-      },
+    const sinceFilter = Math.floor(
+      (Date.now() - 1000 * 60 * 60 * 24 * 30) / 1000,
     );
+
+    let publicationsFacebook: PublicationFacebookOut =
+      await this.facebookService.getAllIgObjects<PublicationFacebookOut>(
+        '17841410886204793/media',
+        ['media_url', 'media_type', 'thumbnail_url', 'timestamp'],
+        sinceFilter,
+      );
+
+    publicationsFacebook.data.forEach((publication: PublicationFacebook) => {
+      this.handlePublicationCreation(publication);
+    });
+
+    while (publicationsFacebook.paging.next) {
+      publicationsFacebook =
+        await this.facebookService.getAllIgObjects<PublicationFacebookOut>(
+          '17841410886204793/media',
+          ['media_url', 'media_type', 'thumbnail_url', 'timestamp'],
+          sinceFilter,
+          publicationsFacebook.paging.cursors.after,
+        );
+
+      publicationsFacebook.data.forEach((publication: PublicationFacebook) => {
+        this.handlePublicationCreation(publication);
+      });
+    }
+  }
+
+  async handlePublicationCreation(publication: PublicationFacebook) {
+    let metrics: string[] = ['saved', 'reach'];
+    switch (publication.media_type) {
+      case 'CAROUSEL_ALBUM':
+        metrics = metrics.concat(['impressions']);
+        break;
+      case 'IMAGE':
+        metrics = metrics.concat(['profile_visits', 'shares', 'follows', 'impressions']);
+        break;
+      case 'VIDEO':
+        metrics = metrics.concat(['comments', 'shares']);
+        break;
+    }
+
+    const publicationMetrics: PostMetricsOut =
+      await this.facebookService.getIgMediaMetrics(publication.id, metrics);
+
+    const publicationDto: CreatePublicationDto =
+      this.facebookService.mapToPublication(publication, publicationMetrics, 1);
+
+    const createdPublication: Publication | null =
+      await this.publicationsService.create(publicationDto);
+
+    if (createdPublication) {
+      this.auditService.createAuditLog(
+        1,
+        AuditEventEnum.CreatePublication,
+        createdPublication.id,
+        '',
+      );
+    } else {
+      const updatedPublication: Publication | null =
+        await this.publicationsService.updateByNetworkId(
+          publicationDto.networkId,
+          publicationDto,
+        );
+
+      this.auditService.createAuditLog(
+        1,
+        AuditEventEnum.UpdatePublication,
+        updatedPublication.id,
+        '',
+      );
+    }
   }
 }

@@ -22,4 +22,12 @@ export type PublicationFacebook = {
 
 export class PublicationFacebookOut {
   data: PublicationFacebook[];
+  paging: {
+    cursors: {
+      before: string;
+      after: string;
+    };
+    next?: string;
+    before?: string;
+  };
 }

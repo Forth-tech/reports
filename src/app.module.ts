@@ -46,10 +46,14 @@ import { PublicationsModule } from './publications/publications.module';
     SupervisorModule,
     AdGroupModule,
     DailyResultsModule,
+    PublicationsModule,
     RouterModule.register([
       {
         path: 'marketing',
-        children: [{ path: 'daily-results', module: DailyResultsModule }],
+        children: [
+          { path: 'daily-results', module: DailyResultsModule },
+          { path: 'publications', module: PublicationsModule },
+        ],
       },
     ]),
     RouterModule.register([
@@ -79,7 +83,6 @@ import { PublicationsModule } from './publications/publications.module';
         ],
       },
     ]),
-    PublicationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, AuditService],
