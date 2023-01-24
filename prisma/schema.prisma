@@ -272,6 +272,7 @@ model Item {
   Product     Product  @relation(fields: [id_product], references: [id])
 
   @@map("TB_PurchaseItem")
+  @@unique([id_purchase, id_product])
 }
 
 model Product {
