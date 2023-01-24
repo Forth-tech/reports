@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { CreateAdGroupDto } from '../../ad-group/dto/createAdGroup.dto';
-import { AdGroupFacebookOut } from '../../ad-group/entities/ad-group-facebook.entity';
-import { CreateAdDto } from '../../ad/dto/create-ad.dto';
-import { AdFacebookOut } from '../../ad/entities/ad-facebook.entity';
-import { CreatePublicationDto } from '../../publications/dto/create-publication.dto';
+import { CreateAdGroupDto } from '../../marketing/ad-group/dto/createAdGroup.dto';
+import { AdGroupFacebookOut } from '../../marketing/ad-group/entities/ad-group-facebook.entity';
+import { CreateAdDto } from '../../marketing/ad/dto/create-ad.dto';
+import { AdFacebookOut } from '../../marketing/ad/entities/ad-facebook.entity';
+import { CreatePublicationDto } from '../../marketing/publications/dto/create-publication.dto';
 import {
   PostMetricsOut,
   PublicationFacebook,
-} from '../../publications/entities/publication-facebook.entity';
-import { CreateAdCampaign } from '../../ad-campaign/dto/creatAdCampaign.dto';
-import { AdCampaignFacebookOut } from '../../ad-campaign/entities/ad-campaign-facebook.entity';
+} from '../../marketing/publications/entities/publication-facebook.entity';
+import { CreateAdCampaign } from '../../marketing/ad-campaign/dto/creatAdCampaign.dto';
+import { AdCampaignFacebookOut } from '../../marketing/ad-campaign/entities/ad-campaign-facebook.entity';
 import { Format } from '@prisma/client';
 
 @Injectable()
